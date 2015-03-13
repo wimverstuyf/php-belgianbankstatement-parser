@@ -1,0 +1,39 @@
+{
+  "name": "codelicious/php-belgianbankstatement-parser",
+  "description": "Unified parser for several bank statement formats from Belgian banks",
+  "keywords": ["mt940", "coda", "parsing", "bank", "belgian"],
+  "homepage": "https://github.com/wimverstuyf/php-belgianbankstatement-parser",
+  "type": "library",
+  "license": "GPL-2.0",
+  "authors": [
+    { "name": "Wim Verstuyf", "email": "wim.verstuyf@codelicious.be" }
+  ],
+  "repositories": {
+    "robarov": {
+      "type": "package",
+      "package": {
+        "name": "robarov/csv2mt940",
+        "version": "0.1",
+        "source": {
+          "url": "https://github.com/robarov/csv2mt940",
+          "type": "git",
+          "reference": "1cd46d9ece"
+        }
+      }
+    }
+  },
+  "require": {
+    "php": ">=5.3.0",
+    "codelicious/php-coda-parser": "dev-master",
+    "kingsquare/php-mt940": ">=0.9",
+    "robarov/csv2mt940": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.5.*"
+  },
+  "autoload": {
+    "psr-4":{
+      "Codelicious\\BelgianBankStatement\\": ["src/"]
+    }
+  }
+}
