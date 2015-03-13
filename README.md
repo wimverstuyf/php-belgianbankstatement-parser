@@ -2,6 +2,8 @@
 Unified parser for several bank statement formats from Belgian banks.
 Supports CODA, MT940 and CSV (BNP Paribas)
 
+[![Build Status](https://secure.travis-ci.org/wimverstuyf/php-belgianbankstatement-parser.png?branch=master)](https://travis-ci.org/wimverstuyf/php-belgianbankstatement-parser)
+
 ## Installation
 
 You can install Codelicious/BelgianBankStatement using Composer. You can read more about Composer and its main repository at
