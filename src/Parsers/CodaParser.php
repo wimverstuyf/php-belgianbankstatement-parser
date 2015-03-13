@@ -18,12 +18,16 @@ class CodaParser extends AbstractParser {
     public function parse($content)
     {
         $parser = new \Codelicious\Coda\Parser();
-        $statements = $parser->parse($content, "simple");
+        $ori_statements = $parser->parse($content, "simple");
 
-        if ($statements)
-            return $this->convert($statements[0]);
-        else
-            return NULL;
+        $statements = array();
+
+        if ($ori_statements) {
+            foreach($ori_statements as $stmt) {
+                array_push($statements, $this->convert($stmt));
+            }
+        }
+        return $statements;
     }
 
     private function convert($stmt)
@@ -44,6 +48,11 @@ class CodaParser extends AbstractParser {
 
         foreach($stmt->transactions as $tr) {
             $transaction = new \Codelicious\BelgianBankStatement\Data\Transaction();
+            $transaction->amount = $tr->amount;
+            $transaction->transaction_date = $tr->transaction_date;
+            $transaction->valuta_date = $tr->valuta_date;
+            $transaction->message = $tr->message;
+            $transaction->structured_message = $tr->structured_message;
 
             if ($tr->account) {
                 $transaction->account = new \Codelicious\BelgianBankStatement\Data\Account();

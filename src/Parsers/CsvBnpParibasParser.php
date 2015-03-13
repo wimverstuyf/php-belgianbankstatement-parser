@@ -17,40 +17,55 @@ class CsvBnpParibasParser extends AbstractParser {
 
     public function parse($content)
     {
-        require('../../vendor/robarov/csv2mt940/classes/CsvParser.php');
-        require('../../vendor/robarov/csv2mt940/classes/Transaction.php');
-
         $path = 'php://memory';
         $h = fopen($path, "rw+");
-        fwrite($h, $content);
+        fwrite($h, implode("\n", $content));
         fseek($h, 0);
 
-        $parser = new CsvParser();
-        $transactions = $parser->parse($h);
+        $statement = $this->parseFileHandle($h);
 
-        return $this->convert($transactions);
+        fclose($h);
+
+        return array($statement);
     }
 
-    private function convert($transactions)
+    private function parseFileHandle($handle)
     {
-        $statement = new \Codelicious\BelgianBankStatement\Data\Statement();
+        // credits: based on https://github.com/robarov/csv2mt940
 
-        foreach($transactions as $tr)
-        {
+        $statement = new \Codelicious\BelgianBankStatement\Data\Statement();
+        $statement->account = new \Codelicious\BelgianBankStatement\Data\Account();
+
+        while (($data = fgetcsv($handle, 0, ';', '"')) !== FALSE) {
+
             $transaction = new \Codelicious\BelgianBankStatement\Data\Transaction();
             $transaction->account = new \Codelicious\BelgianBankStatement\Data\Account();
 
-            $transaction->message = $tr->getReferte() . " " . $tr->getDetail();
-            $transaction->transaction_date = $tr->getUitvoeringsdatum();
-            $transaction->valuta_date = $tr->getValutadatum();
-            $transaction->amount = $tr->getBedrag();
-            $transaction->account->name = $tr->getTegenpartij();
-            $transaction->account->number = $tr->getRekening();
-            $transaction->account->currency = $tr->getMunt();
+            $transaction->message = $data[6];
+            $transaction->transaction_date = $this->convert_date($data[1]);
+            $transaction->valuta_date = $this->convert_date($data[2]);
+            $transaction->amount = (float)str_replace(',', '.', $data[3]);
+            $transaction->account->number = trim($data[5]);
+            $transaction->account->currency = $data[4];
+            $statement->account->number = trim($data[7]);
 
-            array_push($statement->transactions, $tr);
+            array_push($statement->transactions, $transaction);
         }
+
+        if ($statement->transactions)
+            array_shift($statement->transactions); // We don't need the first row, as it contains the column headers
 
         return $statement;
     }
+
+    private function convert_date($custom_date)
+    {
+        $date = $custom_date;
+        if (strlen($custom_date) == 10) {
+            $date = substr($custom_date, 6, 4) . "-" . substr($custom_date, 3, 2) . "-" . substr($custom_date, 0, 2);
+        }
+
+        return $date;
+    }
+
 }
