@@ -36,4 +36,9 @@ class Parser {
 
         return $parser->parse($content);
     }
+
+    public function parseFile($file, $type)
+    {
+        return $this->parse(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES), $type);
+    }
 }
