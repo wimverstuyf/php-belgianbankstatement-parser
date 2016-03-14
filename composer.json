@@ -11,7 +11,7 @@
   "require": {
     "php": ">=5.4.0",
     "codelicious/php-coda-parser": "^1.0",
-    "kingsquare/php-mt940": ">=0.9"
+    "kingsquare/php-mt940": "^1.1"
   },
   "require-dev": {
     "phpunit/phpunit": "4.5.*"
