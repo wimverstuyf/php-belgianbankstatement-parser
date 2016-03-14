@@ -10,7 +10,7 @@
   ],
   "require": {
     "php": ">=5.4.0",
-    "codelicious/php-coda-parser": "dev-master",
+    "codelicious/php-coda-parser": "^1.0",
     "kingsquare/php-mt940": ">=0.9"
   },
   "require-dev": {
