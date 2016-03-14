@@ -13,9 +13,15 @@ Packagist home page, then define your dependency on Codelicious/BelgianBankState
 ```json
     {
         "require": {
-            "codelicious/php-belgianbankstatement-parser": "dev-master"
+            "codelicious/php-belgianbankstatement-parser": "^1.0"
         }
     }
+```
+
+Or you can execute the following command in your project root to install this library:
+
+```sh
+composer require codelicious/php-coda-parser:^1.0
 ```
 
 ## Usage
