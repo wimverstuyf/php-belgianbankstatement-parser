@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: wim
- * Date: 14/03/15
- * Time: 0:20
- */
 
 namespace Codelicious\Tests\BelgianBankStatement;
-
 
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,15 +16,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($statement->account);
         $this->assertEquals(3, count($statement->transactions));
         $this->assertEquals("2015-01-18", $statement->date);
-        $this->assertEquals(-4004.1, $statement->original_balance);
-        $this->assertEquals(500012.1, $statement->new_balance);
+        $this->assertEquals(4004.1, $statement->original_balance);
+        $this->assertEquals(-500012.1, $statement->new_balance);
         $this->assertEquals("CODELICIOUS", $statement->account->name);
         $this->assertEquals("001548226815", $statement->account->number);
         $tr1 = $statement->transactions[0];
         $this->assertNotEmpty($tr1->account);
         $this->assertEquals("2014-12-25", $tr1->transaction_date);
-        $this->assertEquals(767.823, $tr1->amount);
-        $this->assertEquals("112/4554/46812   813ANOTHER MESSAGEMESSAGE", $tr1->message);
+        $this->assertEquals(-767.823, $tr1->amount);
+        $this->assertEquals("112/4554/46812   813  ANOTHER MESSAGE  MESSAGE", $tr1->message);
     }
 
     public function testMt940Parse()
@@ -47,7 +40,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(3, count($statement->transactions));
         $this->assertEquals("2010-07-22", $statement->date);
         $this->assertEquals(44.89, $statement->original_balance);
-        $this->assertEquals(9945.09, $statement->new_balance);
+        $this->assertEquals(-9945.09, $statement->new_balance);
         $this->assertEquals("111111111", $statement->account->name);
         $this->assertEquals("100", $statement->account->number);
         $tr1 = $statement->transactions[0];

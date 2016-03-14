@@ -2,7 +2,6 @@
 
 namespace Codelicious\Tests\BelgianBankStatement;
 
-
 class CodaParserTest extends \PHPUnit_Framework_TestCase
 {
     public function testSample1()
@@ -17,8 +16,8 @@ class CodaParserTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($statement->account);
         $this->assertEquals(3, count($statement->transactions));
         $this->assertEquals("2015-01-18", $statement->date);
-        $this->assertEquals(-4004.1, $statement->original_balance);
-        $this->assertEquals(500012.1, $statement->new_balance);
+        $this->assertEquals(4004.1, $statement->original_balance);
+        $this->assertEquals(-500012.1, $statement->new_balance);
 
         $this->assertEquals("CODELICIOUS", $statement->account->name);
         $this->assertEquals("GEBABEBB", $statement->account->bic);
@@ -33,8 +32,8 @@ class CodaParserTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEmpty($tr1->account);
         $this->assertEquals("2014-12-25", $tr1->transaction_date);
         $this->assertEquals("2014-12-25", $tr1->valuta_date);
-        $this->assertEquals(767.823, $tr1->amount);
-        $this->assertEquals("112/4554/46812   813ANOTHER MESSAGEMESSAGE", $tr1->message);
+        $this->assertEquals(-767.823, $tr1->amount);
+        $this->assertEquals("112/4554/46812   813  ANOTHER MESSAGE  MESSAGE", $tr1->message);
         $this->assertEmpty($tr1->structured_message);
 
         $this->assertEquals("BVBA.BAKKER PIET", $tr1->account->name);
@@ -43,7 +42,7 @@ class CodaParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("EUR", $tr1->account->currency);
         $this->assertEmpty($tr1->account->country);
 
-        $this->assertEquals("", $tr2->message);
+        $this->assertEquals("54875", $tr2->message);
         $this->assertEquals("112455446812", $tr2->structured_message);
 
         $this->assertEmpty($tr3->account->name);

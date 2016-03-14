@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: wim
- * Date: 13/03/15
- * Time: 19:54
- */
 
 namespace Codelicious\BelgianBankStatement\Parsers;
 

@@ -2,7 +2,6 @@
 
 namespace Codelicious\Tests\BelgianBankStatement;
 
-
 class Mt940ParserTest extends \PHPUnit_Framework_TestCase
 {
     public function testSample1()
@@ -18,7 +17,7 @@ class Mt940ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(3, count($statement->transactions));
         $this->assertEquals("2010-07-22", $statement->date);
         $this->assertEquals(44.89, $statement->original_balance);
-        $this->assertEquals(9945.09, $statement->new_balance);
+        $this->assertEquals(-9945.09, $statement->new_balance);
 
         $this->assertEquals("111111111", $statement->account->name);
         $this->assertEquals("100", $statement->account->number);
