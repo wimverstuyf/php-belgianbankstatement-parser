@@ -2,55 +2,70 @@
 
 namespace Codelicious\BelgianBankStatement\Parsers;
 
+use Codelicious\BelgianBankStatement\Values\Account;
+use Codelicious\BelgianBankStatement\Values\Statement;
+use Codelicious\BelgianBankStatement\Values\Transaction;
+use DateTime;
+use Kingsquare\Parser\Banking\Mt940;
+use Kingsquare\Banking\Statement as Mt940Statement;
 
 /**
  * @package Codelicious\BelgianBankStatement
  * @author Wim Verstuyf (wim.verstuyf@codelicious.be)
  * @license http://opensource.org/licenses/GPL-2.0 GPL-2.0
  */
-class Mt940Parser extends AbstractParser {
-
-    public function parse($content)
+class Mt940Parser implements ParserInterface {
+	
+	/**
+	 * @param string $contentToParse
+	 * @return Statement[]
+	 */
+	public function parse(string $contentToParse): array
     {
-        $string = implode("\n", $content);
-
-        $parser = new \Kingsquare\Parser\Banking\Mt940();
-        $ori_statements = $parser->parse($string);
-        $statements = array();
-
-        if ($ori_statements) {
-            foreach($ori_statements as $stmt) {
-                array_push($statements, $this->convert($stmt));
-            }
-        }
-        return $statements;
+        $parser = new Mt940();
+        $mt940Statements = $parser->parse($contentToParse);
+	
+	    return array_map(
+		    function(Mt940Statement $statement) {
+			    return $this->convert($statement);
+		    }, $mt940Statements);
     }
 
-    private function convert($stmt)
+    private function convert(Mt940Statement $stmt): Statement
     {
-        $statement = new \Codelicious\BelgianBankStatement\Data\Statement();
-        $statement->date = $stmt->getTimestamp('Y-m-d');
-        $statement->original_balance = $stmt->getStartPrice();
-        $statement->new_balance = $stmt->getEndPrice();
-        $statement->account = new \Codelicious\BelgianBankStatement\Data\Account();
-        $statement->account->name = $stmt->getAccount();
-        $statement->account->number = $stmt->getNumber();
-
+	    $transactions = [];
         foreach($stmt->getTransactions() as $tr)
         {
-            $transaction = new \Codelicious\BelgianBankStatement\Data\Transaction();
-            $transaction->account = new \Codelicious\BelgianBankStatement\Data\Account();
-
-            $transaction->message = $tr->getDescription();
-            $transaction->transaction_date = $tr->getEntryTimestamp('Y-m-d');
-            $transaction->valuta_date = $tr->getValueTimestamp('Y-m-d');
-            $transaction->amount = $tr->getPrice();
-            $transaction->account->name = $tr->getAccountName();
-            $transaction->account->number = $tr->getAccount();
-
-            array_push($statement->transactions, $transaction);
+	        array_push(
+		        $transactions,
+		        new Transaction(
+			        new Account(
+				        $tr->getAccountName(),
+				        "",
+				        $tr->getAccount(),
+				        "",
+				        ""
+			        ),
+			        new DateTime($tr->getEntryTimestamp('Y-m-d')),
+			        new DateTime($tr->getValueTimestamp('Y-m-d')),
+			        $tr->getPrice(),
+			        $tr->getDescription(),
+			        ""
+		        )
+	        );
         }
 
-        return $statement;
+	    return new Statement(
+		    new DateTime($stmt->getStartTimestamp('Y-m-d')),
+		    new Account(
+			    $stmt->getAccount(),
+			    "",
+			    $stmt->getNumber(),
+			    "",
+			    ""
+		    ),
+		    $stmt->getStartPrice(),
+		    $stmt->getEndPrice(),
+		    $transactions);
     }
 }

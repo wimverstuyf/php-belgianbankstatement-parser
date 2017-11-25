@@ -2,74 +2,70 @@
 
 namespace Codelicious\Tests\BelgianBankStatement;
 
-class ParserTest extends \PHPUnit_Framework_TestCase
+use Codelicious\BelgianBankStatement\Parser;
+
+class ParserTest extends \PHPUnit\Framework\TestCase
 {
     public function testCodaParse()
     {
-        $parser = new \Codelicious\BelgianBankStatement\Parsers\Parser();
+        $parser = new Parser();
 
         $statements = $parser->parse($this->getSampleCoda(), 'coda');
 
         $this->assertEquals(1, count($statements));
         $statement = $statements[0];
 
-        $this->assertNotEmpty($statement->account);
-        $this->assertEquals(3, count($statement->transactions));
-        $this->assertEquals("2015-01-18", $statement->date);
-        $this->assertEquals(4004.1, $statement->original_balance);
-        $this->assertEquals(-500012.1, $statement->new_balance);
-        $this->assertEquals("CODELICIOUS", $statement->account->name);
-        $this->assertEquals("001548226815", $statement->account->number);
-        $tr1 = $statement->transactions[0];
-        $this->assertNotEmpty($tr1->account);
-        $this->assertEquals("2014-12-25", $tr1->transaction_date);
-        $this->assertEquals(-767.823, $tr1->amount);
-        $this->assertEquals("112/4554/46812   813  ANOTHER MESSAGE  MESSAGE", $tr1->message);
+        $this->assertEquals(3, count($statement->getTransactions()));
+        $this->assertEquals("2015-01-18", $statement->getDate()->format('Y-m-d'));
+        $this->assertEquals(4004.1, $statement->getInitialBalance());
+        $this->assertEquals(-500012.1, $statement->getNewBalance());
+        $this->assertEquals("CODELICIOUS", $statement->getAccount()->getName());
+        $this->assertEquals("001548226815", $statement->getAccount()->getNumber());
+        $tr1 = $statement->getTransactions()[0];
+        $this->assertEquals("2014-12-25", $tr1->getTransactionDate()->format('Y-m-d'));
+        $this->assertEquals(-767.823, $tr1->getAmount());
+        $this->assertEquals("112/4554/46812   813  ANOTHER MESSAGE  MESSAGE", $tr1->getMessage());
     }
 
     public function testMt940Parse()
     {
-        $parser = new \Codelicious\BelgianBankStatement\Parsers\Parser();
+        $parser = new Parser();
 
         $statements = $parser->parse($this->getSampleMt940(), 'mt940');
 
         $this->assertEquals(1, count($statements));
         $statement = $statements[0];
 
-        $this->assertNotEmpty($statement->account);
-        $this->assertEquals(3, count($statement->transactions));
-        $this->assertEquals("2010-07-22", $statement->date);
-        $this->assertEquals(44.89, $statement->original_balance);
-        $this->assertEquals(-9945.09, $statement->new_balance);
-        $this->assertEquals("111111111", $statement->account->name);
-        $this->assertEquals("100", $statement->account->number);
-        $tr1 = $statement->transactions[0];
-        $this->assertNotEmpty($tr1->account);
-        $this->assertEquals("2010-07-22", $tr1->transaction_date);
-        $this->assertEquals(0.56, $tr1->amount);
-        $this->assertEquals("0111111111 V. DE JONG KERKSTRAAT 1154 1234 BWENSCHEDE BET.KENM. 1004510036716378 3305330802AFLOSSINGSTERMIJN 188616 / 1E TERMIJN", $tr1->message);
+        $this->assertEquals(3, count($statement->getTransactions()));
+        $this->assertEquals("2010-07-22", $statement->getDate()->format('Y-m-d'));
+        $this->assertEquals(44.89, $statement->getInitialBalance());
+        $this->assertEquals(-9945.09, $statement->getNewBalance());
+        $this->assertEquals("111111111", $statement->getAccount()->getName());
+        $this->assertEquals("100", $statement->getAccount()->getNumber());
+        $tr1 = $statement->getTransactions()[0];
+        $this->assertEquals("2010-07-22", $tr1->getTransactionDate()->format('Y-m-d'));
+        $this->assertEquals(0.56, $tr1->getAmount());
+        $this->assertEquals("0111111111 V. DE JONG KERKSTRAAT 1154 1234 BWENSCHEDE BET.KENM. 1004510036716378 3305330802AFLOSSINGSTERMIJN 188616 / 1E TERMIJN", $tr1->getMessage());
     }
 
     public function testCsvParse()
     {
-        $parser = new \Codelicious\BelgianBankStatement\Parsers\Parser();
+        $parser = new Parser();
 
         $statements = $parser->parse($this->getSampleCsv(), 'csv');
 
         $this->assertEquals(1, count($statements));
         $statement = $statements[0];
-        $this->assertNotEmpty($statement->account);
-        $this->assertEquals(4, count($statement->transactions));
-        $this->assertEquals("BE58 2135 3215 3215", $statement->account->number);
-        $tr1 = $statement->transactions[0];
-        $this->assertNotEmpty($tr1->account);
-        $this->assertEquals("2015-01-13", $tr1->transaction_date);
-        $this->assertEquals(-5.3, $tr1->amount);
-        $this->assertEquals("MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015", $tr1->message);
-        $this->assertEquals("BETALING MET BANKKAART", $tr1->account->number);
+        $this->assertEquals(4, count($statement->getTransactions()));
+        $this->assertEquals("BE58 2135 3215 3215", $statement->getAccount()->getNumber());
+        $tr1 = $statement->getTransactions()[0];
+        $this->assertEquals("2015-01-13", $tr1->getTransactionDate()->format('Y-m-d'));
+        $this->assertEquals(-5.3, $tr1->getAmount());
+        $this->assertEquals("MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015", $tr1->getMessage());
+        $this->assertEquals("BETALING MET BANKKAART", $tr1->getAccount()->getNumber());
     }
 
-    private function getSampleMt940()
+    private function getSampleMt940(): string
     {
         $content = array(
             "0000 01INGBNL2AXXXX00001",
@@ -100,11 +96,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             "ING TESTREKENING",
             "XXX"
         );
-
-        return $content;
+	
+	    return implode("\n", $content);
     }
 
-    private function getSampleCsv()
+    private function getSampleCsv(): string
     {
         $content = array(
             '"JAAR + REFERTE";"UITVOERINGSDATUM";"VALUTADATUM";"BEDRAG";"MUNT V/D REKENING";"TEGENPARTIJ VAN DE VERRICHTING";"DETAILS";"REKENINGNUMMER"',
@@ -113,12 +109,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             '"2015-0076";"14/03/2015";"16/03/2015";"-78,48";"EUR";"BE12 5498 2135 2158 ";"SOME SHOP BE21354584321548 BIC VDSDEC21    VIA PC BANKING MEDEDELING : 215456321548 UITGEVOERD OP 13-03 VALUTADATUM : 16/03/2015";"BE58 2135 3215 3215 ";',
             '"2015-0075";"14/04/2015";"16/04/2015";"-80,46";"EUR";"BE15 2135 5148 2133 ";"TELENET NV BE23156489435123 BIC KREDBEBB    VIA PC BANKING MEDEDELING : 321231564845 UITGEVOERD OP 13-04 VALUTADATUM : 16/04/2015";"BE58 2135 3215 3215 ";',
         );
-
-        return $content;
+	
+	    return implode("\n", $content);
     }
 
 
-    private function getSampleCoda()
+    private function getSampleCoda(): string
     {
         $content = array(
             "0000018011520105        0938409934CODELICIOUS               GEBABEBB   09029308273 00001          984309          834080       2",
@@ -139,7 +135,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             "4 00010005                      THIS IS A PUBLIC MESSAGE                                                                       0",
             "9               000015000000016837520000000003967220                                                                           1",
         );
-
-        return $content;
+	
+	    return implode("\n", $content);
     }
 }

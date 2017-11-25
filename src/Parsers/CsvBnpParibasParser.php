@@ -2,64 +2,86 @@
 
 namespace Codelicious\BelgianBankStatement\Parsers;
 
+use Codelicious\BelgianBankStatement\Values\Account;
+use Codelicious\BelgianBankStatement\Values\Statement;
+use Codelicious\BelgianBankStatement\Values\Transaction;
+use DateTime;
+
 /**
  * @package Codelicious\BelgianBankStatement
  * @author Wim Verstuyf (wim.verstuyf@codelicious.be)
  * @license http://opensource.org/licenses/GPL-2.0 GPL-2.0
  */
-class CsvBnpParibasParser extends AbstractParser {
-
-    public function parse($content)
+class CsvBnpParibasParser implements ParserInterface {
+	
+	/**
+	 * @param string $contentToParse
+	 * @return Statement[]
+	 */
+	public function parse(string $contentToParse): array
     {
         $path = 'php://memory';
         $h = fopen($path, "rw+");
-        fwrite($h, implode("\n", $content));
+        fwrite($h, $contentToParse);
         fseek($h, 0);
 
         $statement = $this->parseFileHandle($h);
 
         fclose($h);
 
-        return array($statement);
+        return [$statement];
     }
 
     private function parseFileHandle($handle)
     {
         // credits: based on https://github.com/robarov/csv2mt940
 
-        $statement = new \Codelicious\BelgianBankStatement\Data\Statement();
-        $statement->account = new \Codelicious\BelgianBankStatement\Data\Account();
-
+        $transactions = [];
+        $isFirstLine = true;
+        $accountNumber = "";
         while (($data = fgetcsv($handle, 0, ';', '"')) !== FALSE) {
-
-            $transaction = new \Codelicious\BelgianBankStatement\Data\Transaction();
-            $transaction->account = new \Codelicious\BelgianBankStatement\Data\Account();
-
-            $transaction->message = $data[6];
-            $transaction->transaction_date = $this->convert_date($data[1]);
-            $transaction->valuta_date = $this->convert_date($data[2]);
-            $transaction->amount = (float)str_replace(',', '.', $data[3]);
-            $transaction->account->number = trim($data[5]);
-            $transaction->account->currency = $data[4];
-            $statement->account->number = trim($data[7]);
-
-            array_push($statement->transactions, $transaction);
+			if ($isFirstLine) {
+				// We don't need the first row, as it contains the column headers
+				$isFirstLine = false;
+			} else {
+				$accountNumber = trim($data[7]);
+				
+				array_push(
+					$transactions,
+					new Transaction(
+						new Account(
+							"",
+							"",
+							trim($data[5]),
+							$data[4],
+							""
+						),
+						$this->convertDate($data[1]),
+						$this->convertDate($data[2]),
+						(float)str_replace(',', '.', $data[3]),
+						$data[6],
+						""
+					)
+				);
+			}
         }
-
-        if ($statement->transactions)
-            array_shift($statement->transactions); // We don't need the first row, as it contains the column headers
-
-        return $statement;
+        
+        return new Statement(
+        	new DateTime("0001-01-01"),
+        	new Account("", "", $accountNumber, "", ""),
+	        0,
+	        0,
+	        $transactions
+        );
     }
 
-    private function convert_date($custom_date)
+    private function convertDate($dateString): DateTime
     {
-        $date = $custom_date;
-        if (strlen($custom_date) == 10) {
-            $date = substr($custom_date, 6, 4) . "-" . substr($custom_date, 3, 2) . "-" . substr($custom_date, 0, 2);
+        $date = $dateString;
+        if (mb_strlen($dateString) == 10) {
+            $date = substr($dateString, 6, 4) . "-" . substr($dateString, 3, 2) . "-" . substr($dateString, 0, 2);
         }
 
-        return $date;
+        return new DateTime($date);
     }
-
 }

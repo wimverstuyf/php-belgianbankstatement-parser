@@ -13,7 +13,7 @@ Packagist home page, then define your dependency on Codelicious/BelgianBankState
 ```json
     {
         "require": {
-            "codelicious/php-belgianbankstatement-parser": "^1.0"
+            "codelicious/php-belgianbankstatement-parser": "^2.0"
         }
     }
 ```
@@ -21,7 +21,7 @@ Packagist home page, then define your dependency on Codelicious/BelgianBankState
 Or you can execute the following command in your project root to install this library:
 
 ```sh
-composer require codelicious/php-belgianbankstatement-parser:^1.0
+composer require codelicious/php-belgianbankstatement-parser
 ```
 
 ## Usage
@@ -29,39 +29,38 @@ composer require codelicious/php-belgianbankstatement-parser:^1.0
 ```php
 <?php
 
-use Codelicious\BelgianBankStatement\Parsers;
+use Codelicious\BelgianBankStatement;
 
 $parser = new Parser();
 $statement = $parser->parseFile('coda-file.cod', 'coda');
 
-echo $statement->date . "\n";
+echo $statement->getDate()->format('Y-m-d') . "\n";
 
-foreach ($statement->transactions as $transaction) {
-    echo $transaction->account->name . ": " . $transaction->amount . "\n";
+foreach ($statement->getTransactions() as $transaction) {
+    echo $transaction->getAccount()->getName() . ": " . $transaction->getAmount() . "\n";
 }
 
-echo $statement->new_balance . "\n";
+echo $statement->newBalance() . "\n";
 ```
     
 ## Statement structure
 
 *   `Codelicious\BelgianBankStatement\Statement`
-    *   `date` Date of the supplied file (format YYYY-MM-DD)
-    *   `account` Account for which the statements were created. An object implementing `Codelicious\BelgianBankStatement\Account`
-    *   `original_balance` Balance of the account before the transactions were processed. Up to 3 decimals.
-    *   `new_balance` Balance of the account after the transactions were processed. Up to 3 decimals.
-    *   `transaction` A list of transactions implemented as `Codelicious\BelgianBankStatement\Transaction`
+    *   `Date` Date of the supplied file (format YYYY-MM-DD)
+    *   `Account` Account for which the statements were created. An object implementing `Codelicious\BelgianBankStatement\Account`
+    *   `InitialBalance` Balance of the account before the transactions were processed. Up to 3 decimals.
+    *   `NewBalance` Balance of the account after the transactions were processed. Up to 3 decimals.
+    *   `Transactions` A list of transactions implemented as `Codelicious\BelgianBankStatement\Transaction`
 *   `Codelicious\BelgianBankStatement\Account`
-    *   `name` Name of the holder of the account
-    *   `bic` Bankcode of the account
-    *   `number` Banknumber of the account
-    *   `currency` Currency of the account
-    *   `country` Country of the account
+    *   `Name` Name of the holder of the account
+    *   `Bic` Bankcode of the account
+    *   `Number` Banknumber of the account
+    *   `CurrencyCode` Currency of the account
+    *   `CountryCode` Country of the account
 *   `Codelicious\BelgianBankStatement\Transaction`
-    *   `account` Account of the other party of the transaction. An object implementing `Codelicious\BelgianBankStatement\Account`
-    *   `transaction_date` Date on which the transaction was requested
-    *   `valuta_date` Date on which the transaction was executed by the bank
-    *   `amount` Amount of the transaction. Up to 3 decimals. A negative number for credit transactions.
-    *   `message` Message of the transaction
-    *   `structured_message` Structured messages of the transaction (if available)
-
+    *   `Account` Account of the other party of the transaction. An object implementing `Codelicious\BelgianBankStatement\Account`
+    *   `TransactionDate` Date on which the transaction was requested
+    *   `ValutaDate` Date on which the transaction was executed by the bank
+    *   `Amount` Amount of the transaction. Up to 3 decimals. A negative number for credit transactions.
+    *   `Message` Message of the transaction
+    *   `StructuredMessage` Structured messages of the transaction (if available)
