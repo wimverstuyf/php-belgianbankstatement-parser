@@ -2,64 +2,68 @@
 
 namespace Codelicious\BelgianBankStatement\Parsers;
 
+use Codelicious\BelgianBankStatement\Values\Account;
+use Codelicious\BelgianBankStatement\Values\Statement;
+use Codelicious\BelgianBankStatement\Values\Transaction;
+use Codelicious\Coda\Parser;
+use Codelicious\Coda\Statements\Statement as CodaStatement;
+
 /**
  * @package Codelicious\BelgianBankStatement
  * @author Wim Verstuyf (wim.verstuyf@codelicious.be)
  * @license http://opensource.org/licenses/GPL-2.0 GPL-2.0
  */
-class CodaParser extends AbstractParser {
-
-    public function parse($content)
+class CodaParser implements ParserInterface {
+	
+	/**
+	 * @param string $contentToParse
+	 * @return Statement[]
+	 */
+	public function parse(string $contentToParse): array
     {
-        $parser = new \Codelicious\Coda\Parser();
-        $ori_statements = $parser->parse($content, "simple");
+        $parser = new Parser();
+        $codaStatements = $parser->parse(explode("\n", $contentToParse));
 
-        $statements = array();
-
-        if ($ori_statements) {
-            foreach($ori_statements as $stmt) {
-                array_push($statements, $this->convert($stmt));
-            }
-        }
-        return $statements;
+        return array_map(
+        	function(CodaStatement $statement) {
+        		return $this->convert($statement);
+	        }, $codaStatements);
     }
 
-    private function convert($stmt)
+    private function convert(CodaStatement $statement)
     {
-        $statement = new \Codelicious\BelgianBankStatement\Data\Statement();
-        $statement->date = $stmt->date;
-        $statement->original_balance = $stmt->original_balance;
-        $statement->new_balance = $stmt->new_balance;
-
-        if ($stmt->account) {
-            $statement->account = new \Codelicious\BelgianBankStatement\Data\Account();
-            $statement->account->name = $stmt->account->name;
-            $statement->account->number = $stmt->account->number;
-            $statement->account->bic = $stmt->account->bic;
-            $statement->account->country = $stmt->account->country;
-            $statement->account->currency = $stmt->account->currency;
+        $transactions = [];
+        foreach($statement->getTransactions() as $transaction) {
+        	array_push(
+        		$transactions,
+		        new Transaction(
+			        new Account(
+				        $transaction->getAccount()->getName(),
+				        $transaction->getAccount()->getBic(),
+				        $transaction->getAccount()->getNumber(),
+				        $transaction->getAccount()->getCurrencyCode(),
+				        ""
+			        ),
+			        $transaction->getTransactionDate(),
+			        $transaction->getValutaDate(),
+			        $transaction->getAmount(),
+			        $transaction->getMessage(),
+			        $transaction->getStructuredMessage()
+		        )
+	        );
         }
-
-        foreach($stmt->transactions as $tr) {
-            $transaction = new \Codelicious\BelgianBankStatement\Data\Transaction();
-            $transaction->amount = $tr->amount;
-            $transaction->transaction_date = $tr->transaction_date;
-            $transaction->valuta_date = $tr->valuta_date;
-            $transaction->message = $tr->message;
-            $transaction->structured_message = $tr->structured_message;
-
-            if ($tr->account) {
-                $transaction->account = new \Codelicious\BelgianBankStatement\Data\Account();
-                $transaction->account->name = $tr->account->name;
-                $transaction->account->number = $tr->account->number;
-                $transaction->account->bic = $tr->account->bic;
-                $transaction->account->country = $tr->account->country;
-                $transaction->account->currency = $tr->account->currency;
-            }
-
-            array_push($statement->transactions, $transaction);
-        }
-
-        return $statement;
+        
+        return new Statement(
+        	$statement->getDate(),
+	        new Account(
+		        $statement->getAccount()->getName(),
+		        $statement->getAccount()->getBic(),
+		        $statement->getAccount()->getNumber(),
+		        $statement->getAccount()->getCurrencyCode(),
+		        $statement->getAccount()->getCountryCode()
+	        ),
+	        $statement->getInitialBalance(),
+	        $statement->getNewBalance(),
+	        $transactions);
     }
 }

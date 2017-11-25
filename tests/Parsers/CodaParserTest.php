@@ -2,54 +2,54 @@
 
 namespace Codelicious\Tests\BelgianBankStatement;
 
-class CodaParserTest extends \PHPUnit_Framework_TestCase
+use Codelicious\BelgianBankStatement\Parsers\CodaParser;
+
+class CodaParserTest extends \PHPUnit\Framework\TestCase
 {
     public function testSample1()
     {
-        $parser = new \Codelicious\BelgianBankStatement\Parsers\CodaParser();
+        $parser = new CodaParser();
 
         $statements = $parser->parse($this->getSample1());
 
         $this->assertEquals(1, count($statements));
         $statement = $statements[0];
 
-        $this->assertNotEmpty($statement->account);
-        $this->assertEquals(3, count($statement->transactions));
-        $this->assertEquals("2015-01-18", $statement->date);
-        $this->assertEquals(4004.1, $statement->original_balance);
-        $this->assertEquals(-500012.1, $statement->new_balance);
+        $this->assertEquals(3, count($statement->getTransactions()));
+        $this->assertEquals("2015-01-18", $statement->getDate()->format("Y-m-d"));
+        $this->assertEquals(4004.1, $statement->getInitialBalance());
+        $this->assertEquals(-500012.1, $statement->getNewBalance());
 
-        $this->assertEquals("CODELICIOUS", $statement->account->name);
-        $this->assertEquals("GEBABEBB", $statement->account->bic);
-        $this->assertEquals("001548226815", $statement->account->number);
-        $this->assertEquals("EUR", $statement->account->currency);
-        $this->assertEquals("BE", $statement->account->country);
+        $this->assertEquals("CODELICIOUS", $statement->getAccount()->getName());
+        $this->assertEquals("GEBABEBB", $statement->getAccount()->getBic());
+        $this->assertEquals("001548226815", $statement->getAccount()->getNumber());
+        $this->assertEquals("EUR", $statement->getAccount()->getCurrencyCode());
+        $this->assertEquals("BE", $statement->getAccount()->getCountryCode());
 
-        $tr1 = $statement->transactions[0];
-        $tr2 = $statement->transactions[1];
-        $tr3 = $statement->transactions[2];
+        $tr1 = $statement->getTransactions()[0];
+        $tr2 = $statement->getTransactions()[1];
+        $tr3 = $statement->getTransactions()[2];
 
-        $this->assertNotEmpty($tr1->account);
-        $this->assertEquals("2014-12-25", $tr1->transaction_date);
-        $this->assertEquals("2014-12-25", $tr1->valuta_date);
-        $this->assertEquals(-767.823, $tr1->amount);
-        $this->assertEquals("112/4554/46812   813  ANOTHER MESSAGE  MESSAGE", $tr1->message);
-        $this->assertEmpty($tr1->structured_message);
+        $this->assertEquals("2014-12-25", $tr1->getTransactionDate()->format('Y-m-d'));
+        $this->assertEquals("2014-12-25", $tr1->getValutaDate()->format('Y-m-d'));
+        $this->assertEquals(-767.823, $tr1->getAmount());
+        $this->assertEquals("112/4554/46812   813  ANOTHER MESSAGE  MESSAGE", $tr1->getMessage());
+        $this->assertEmpty($tr1->getStructuredMessage());
 
-        $this->assertEquals("BVBA.BAKKER PIET", $tr1->account->name);
-        $this->assertEquals("GEBCEEBB", $tr1->account->bic);
-        $this->assertEquals("BE54805480215856", $tr1->account->number);
-        $this->assertEquals("EUR", $tr1->account->currency);
-        $this->assertEmpty($tr1->account->country);
+        $this->assertEquals("BVBA.BAKKER PIET", $tr1->getAccount()->getName());
+        $this->assertEquals("GEBCEEBB", $tr1->getAccount()->getBic());
+        $this->assertEquals("BE54805480215856", $tr1->getAccount()->getNumber());
+        $this->assertEquals("EUR", $tr1->getAccount()->getCurrencyCode());
+        $this->assertEmpty($tr1->getAccount()->getCountryCode());
 
-        $this->assertEquals("54875", $tr2->message);
-        $this->assertEquals("112455446812", $tr2->structured_message);
+        $this->assertEquals("ANOTHER MESSAGE  MESSAGE", $tr2->getMessage());
+        $this->assertEquals("112455446812", $tr2->getStructuredMessage());
 
-        $this->assertEmpty($tr3->account->name);
-        $this->assertEquals("GEBCEEBB", $tr3->account->bic);
+        $this->assertEmpty($tr3->getAccount()->getName());
+        $this->assertEquals("GEBCEEBB", $tr3->getAccount()->getBic());
     }
 
-    private function getSample1()
+    private function getSample1(): string
     {
         $content = array(
             "0000018011520105        0938409934CODELICIOUS               GEBABEBB   09029308273 00001          984309          834080       2",
@@ -71,6 +71,6 @@ class CodaParserTest extends \PHPUnit_Framework_TestCase
             "9               000015000000016837520000000003967220                                                                           1",
         );
 
-        return $content;
+        return implode("\n", $content);
     }
 }
