@@ -15,7 +15,6 @@ use Codelicious\Coda\Statements\Statement as CodaStatement;
  */
 class CodaParser implements ParserInterface {
 	
-	
 	/**
 	 * @param string $contentToParse
 	 * @return Statement[]
