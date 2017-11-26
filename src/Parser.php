@@ -48,10 +48,10 @@ class Parser {
 	/**
 	 * @param string $file filepath of the file to parse
 	 * @param string $type csv or coda or mt940
-	 * @return Statement
+	 * @return Statement[]
 	 */
-	public function parseFile(string $file, string $type): Statement
+	public function parseFile(string $file, string $type): array
     {
-        return $this->parse(file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES), $type);
+        return $this->parse(implode("\n", file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)), $type);
     }
 }
