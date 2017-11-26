@@ -64,6 +64,23 @@ class ParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015", $tr1->getMessage());
         $this->assertEquals("BETALING MET BANKKAART", $tr1->getAccount()->getNumber());
     }
+    
+    public function testParseFile()
+    {
+	    $parser = new Parser();
+	
+	    $statements = $parser->parseFile($this->getSampleFile('sample1.csv'), 'csv');
+	
+	    $this->assertEquals(1, count($statements));
+	    $statement = $statements[0];
+	    $this->assertEquals(4, count($statement->getTransactions()));
+	    $this->assertEquals("BE58 2135 3215 3215", $statement->getAccount()->getNumber());
+	    $tr1 = $statement->getTransactions()[0];
+	    $this->assertEquals("2015-01-13", $tr1->getTransactionDate()->format('Y-m-d'));
+	    $this->assertEquals(-5.3, $tr1->getAmount());
+	    $this->assertEquals("MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015", $tr1->getMessage());
+	    $this->assertEquals("BETALING MET BANKKAART", $tr1->getAccount()->getNumber());
+    }
 
     private function getSampleMt940(): string
     {
@@ -99,6 +116,11 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 	
 	    return implode("\n", $content);
     }
+	
+	private function getSampleFile(string $sampleFile): string
+	{
+		return __DIR__ . DIRECTORY_SEPARATOR .'Samples' . DIRECTORY_SEPARATOR . $sampleFile;
+	}
 
     private function getSampleCsv(): string
     {
