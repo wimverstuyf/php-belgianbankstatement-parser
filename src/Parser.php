@@ -21,10 +21,10 @@ class Parser {
 	 * @param string $type csv or coda or mt940
 	 * @return Statement[]
 	 */
-    public function parse(string $content, string $type): array
-    {
-        return $this->getParser($type)->parse($content);
-    }
+	public function parse(string $content, string $type): array
+	{
+		return $this->getParser($type)->parse($content);
+	}
 	
 	/**
 	 * @param string $file filepath of the file to parse
@@ -32,31 +32,31 @@ class Parser {
 	 * @return Statement[]
 	 */
 	public function parseFile(string $file, string $type): array
-    {
-    	return $this->getParser($type)->parseFile($file);
-    }
-    
-    private function getParser(string $type): ParserInterface
-    {
-	    /** @var ParserInterface|null $parser */
-	    $parser = null;
+	{
+		return $this->getParser($type)->parseFile($file);
+	}
 	
-	    switch($type)
-	    {
-		    case "csv":
-		    case "csv_bnpparibas":
-			    $parser = new CsvBnpParibasParser();
-			    break;
-		    case "coda":
-			    $parser = new CodaParser();
-			    break;
-		    case "mt940":
-			    $parser = new Mt940Parser();
-			    break;
-		    default:
-			    throw new InvalidArgumentException("type '$type' not valid");
-	    }
-	    
-	    return $parser;
-    }
+	private function getParser(string $type): ParserInterface
+	{
+		/** @var ParserInterface|null $parser */
+		$parser = null;
+		
+		switch($type)
+		{
+			case "csv":
+			case "csv_bnpparibas":
+				$parser = new CsvBnpParibasParser();
+				break;
+			case "coda":
+				$parser = new CodaParser();
+				break;
+			case "mt940":
+				$parser = new Mt940Parser();
+				break;
+			default:
+				throw new InvalidArgumentException("type '$type' not valid");
+		}
+		
+		return $parser;
+	}
 }

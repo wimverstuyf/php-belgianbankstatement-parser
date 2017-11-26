@@ -21,16 +21,16 @@ class CodaParser implements ParserInterface {
 	 * @return Statement[]
 	 */
 	public function parse(string $contentToParse): array
-    {
-    	$contentAsArray = explode("\n", str_replace("\r", "", $contentToParse));
-        $parser = new Parser();
-        $codaStatements = $parser->parse($contentAsArray);
-
-        return array_map(
-        	function(CodaStatement $statement) {
-        		return $this->convert($statement);
-	        }, $codaStatements);
-    }
+	{
+		$contentAsArray = explode("\n", str_replace("\r", "", $contentToParse));
+		$parser = new Parser();
+		$codaStatements = $parser->parse($contentAsArray);
+		
+		return array_map(
+			function(CodaStatement $statement) {
+				return $this->convert($statement);
+			}, $codaStatements);
+	}
 	
 	/**
 	 * @param string $fileToParse
@@ -47,40 +47,40 @@ class CodaParser implements ParserInterface {
 			}, $codaStatements);
 	}
 	
-    private function convert(CodaStatement $statement)
-    {
-        $transactions = [];
-        foreach($statement->getTransactions() as $transaction) {
-        	array_push(
-        		$transactions,
-		        new Transaction(
-			        new Account(
-				        $transaction->getAccount()->getName(),
-				        $transaction->getAccount()->getBic(),
-				        $transaction->getAccount()->getNumber(),
-				        $transaction->getAccount()->getCurrencyCode(),
-				        ""
-			        ),
-			        $transaction->getTransactionDate(),
-			        $transaction->getValutaDate(),
-			        $transaction->getAmount(),
-			        $transaction->getMessage(),
-			        $transaction->getStructuredMessage()
-		        )
-	        );
-        }
-        
-        return new Statement(
-        	$statement->getDate(),
-	        new Account(
-		        $statement->getAccount()->getName(),
-		        $statement->getAccount()->getBic(),
-		        $statement->getAccount()->getNumber(),
-		        $statement->getAccount()->getCurrencyCode(),
-		        $statement->getAccount()->getCountryCode()
-	        ),
-	        $statement->getInitialBalance(),
-	        $statement->getNewBalance(),
-	        $transactions);
-    }
+	private function convert(CodaStatement $statement)
+	{
+		$transactions = [];
+		foreach($statement->getTransactions() as $transaction) {
+			array_push(
+				$transactions,
+				new Transaction(
+					new Account(
+						$transaction->getAccount()->getName(),
+						$transaction->getAccount()->getBic(),
+						$transaction->getAccount()->getNumber(),
+						$transaction->getAccount()->getCurrencyCode(),
+						""
+					),
+					$transaction->getTransactionDate(),
+					$transaction->getValutaDate(),
+					$transaction->getAmount(),
+					$transaction->getMessage(),
+					$transaction->getStructuredMessage()
+				)
+			);
+		}
+		
+		return new Statement(
+			$statement->getDate(),
+			new Account(
+				$statement->getAccount()->getName(),
+				$statement->getAccount()->getBic(),
+				$statement->getAccount()->getNumber(),
+				$statement->getAccount()->getCurrencyCode(),
+				$statement->getAccount()->getCountryCode()
+			),
+			$statement->getInitialBalance(),
+			$statement->getNewBalance(),
+			$transactions);
+	}
 }

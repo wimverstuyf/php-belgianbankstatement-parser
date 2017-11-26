@@ -30,13 +30,13 @@ class Statement {
 	 * @param Transaction[] $transactions
 	 */
 	public function __construct(DateTime $date, Account $account, float $initialBalance, float $newBalance, array $transactions)
-    {
-	    $this->date = $date;
-	    $this->account = $account;
-	    $this->initialBalance = $initialBalance;
-	    $this->newBalance = $newBalance;
-	    $this->transactions = $transactions;
-    }
+	{
+		$this->date = $date;
+		$this->account = $account;
+		$this->initialBalance = $initialBalance;
+		$this->newBalance = $newBalance;
+		$this->transactions = $transactions;
+	}
 	
 	public function getDate(): DateTime
 	{

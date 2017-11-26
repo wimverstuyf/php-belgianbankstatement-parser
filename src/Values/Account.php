@@ -21,13 +21,13 @@ class Account {
 	private $countryCode;
 	
 	public function __construct(string $name, string $bic, string $number, string $currencyCode, string $countryCode)
-    {
-	    $this->name = $name;
-	    $this->bic = $bic;
-	    $this->number = $number;
-	    $this->currencyCode = $currencyCode;
-	    $this->countryCode = $countryCode;
-    }
+	{
+		$this->name = $name;
+		$this->bic = $bic;
+		$this->number = $number;
+		$this->currencyCode = $currencyCode;
+		$this->countryCode = $countryCode;
+	}
 	
 	public function getName(): string
 	{

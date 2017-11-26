@@ -19,18 +19,18 @@ class CsvBnpParibasParser implements ParserInterface {
 	 * @return Statement[]
 	 */
 	public function parse(string $contentToParse): array
-    {
-        $path = 'php://memory';
-        $h = fopen($path, "rw+");
-        fwrite($h, $contentToParse);
-        fseek($h, 0);
-
-        $statement = $this->parseFileHandle($h);
-
-        fclose($h);
-
-        return [$statement];
-    }
+	{
+		$path = 'php://memory';
+		$h = fopen($path, "rw+");
+		fwrite($h, $contentToParse);
+		fseek($h, 0);
+		
+		$statement = $this->parseFileHandle($h);
+		
+		fclose($h);
+		
+		return [$statement];
+	}
 	
 	/**
 	 * @param string $fileToParse
@@ -41,14 +41,14 @@ class CsvBnpParibasParser implements ParserInterface {
 		return $this->parse(file_get_contents($fileToParse));
 	}
 	
-    private function parseFileHandle($handle)
-    {
-        // credits: based on https://github.com/robarov/csv2mt940
-
-        $transactions = [];
-        $isFirstLine = true;
-        $accountNumber = "";
-        while (($data = fgetcsv($handle, 0, ';', '"')) !== FALSE) {
+	private function parseFileHandle($handle)
+	{
+		// credits: based on https://github.com/robarov/csv2mt940
+		
+		$transactions = [];
+		$isFirstLine = true;
+		$accountNumber = "";
+		while (($data = fgetcsv($handle, 0, ';', '"')) !== FALSE) {
 			if ($isFirstLine) {
 				// We don't need the first row, as it contains the column headers
 				$isFirstLine = false;
@@ -73,24 +73,24 @@ class CsvBnpParibasParser implements ParserInterface {
 					)
 				);
 			}
-        }
-        
-        return new Statement(
-        	new DateTime("0001-01-01"),
-        	new Account("", "", $accountNumber, "", ""),
-	        0,
-	        0,
-	        $transactions
-        );
-    }
-
-    private function convertDate($dateString): DateTime
-    {
-        $date = $dateString;
-        if (mb_strlen($dateString) == 10) {
-            $date = substr($dateString, 6, 4) . "-" . substr($dateString, 3, 2) . "-" . substr($dateString, 0, 2);
-        }
-
-        return new DateTime($date);
-    }
+		}
+		
+		return new Statement(
+			new DateTime("0001-01-01"),
+			new Account("", "", $accountNumber, "", ""),
+			0,
+			0,
+			$transactions
+		);
+	}
+	
+	private function convertDate($dateString): DateTime
+	{
+		$date = $dateString;
+		if (mb_strlen($dateString) == 10) {
+			$date = substr($dateString, 6, 4) . "-" . substr($dateString, 3, 2) . "-" . substr($dateString, 0, 2);
+		}
+		
+		return new DateTime($date);
+	}
 }
