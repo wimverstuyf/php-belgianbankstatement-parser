@@ -31,7 +31,16 @@ class CsvBnpParibasParser implements ParserInterface {
 
         return [$statement];
     }
-
+	
+	/**
+	 * @param string $fileToParse
+	 * @return Statement[]
+	 */
+	public function parseFile(string $fileToParse): array
+	{
+		return $this->parse(file_get_contents($fileToParse));
+	}
+	
     private function parseFileHandle($handle)
     {
         // credits: based on https://github.com/robarov/csv2mt940

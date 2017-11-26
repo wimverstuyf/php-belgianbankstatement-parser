@@ -23,26 +23,7 @@ class Parser {
 	 */
     public function parse(string $content, string $type): array
     {
-    	/** @var ParserInterface|null $parser */
-        $parser = null;
-
-        switch($type)
-        {
-            case "csv":
-            case "csv_bnpparibas":
-                $parser = new CsvBnpParibasParser();
-                break;
-            case "coda":
-                $parser = new CodaParser();
-                break;
-            case "mt940":
-                $parser = new Mt940Parser();
-                break;
-            default:
-                throw new InvalidArgumentException("type '$type' not valid");
-        }
-
-        return $parser->parse($content);
+        return $this->getParser($type)->parse($content);
     }
 	
 	/**
@@ -52,6 +33,30 @@ class Parser {
 	 */
 	public function parseFile(string $file, string $type): array
     {
-        return $this->parse(implode("\n", file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES)), $type);
+    	return $this->getParser($type)->parseFile($file);
+    }
+    
+    private function getParser(string $type): ParserInterface
+    {
+	    /** @var ParserInterface|null $parser */
+	    $parser = null;
+	
+	    switch($type)
+	    {
+		    case "csv":
+		    case "csv_bnpparibas":
+			    $parser = new CsvBnpParibasParser();
+			    break;
+		    case "coda":
+			    $parser = new CodaParser();
+			    break;
+		    case "mt940":
+			    $parser = new Mt940Parser();
+			    break;
+		    default:
+			    throw new InvalidArgumentException("type '$type' not valid");
+	    }
+	    
+	    return $parser;
     }
 }

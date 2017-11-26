@@ -16,4 +16,10 @@ interface ParserInterface
 	 * @return Statement[]
 	 */
 	function parse(string $contentToParse): array;
+	
+	/**
+	 * @param string $fileToParse
+	 * @return Statement[]
+	 */
+	function parseFile(string $fileToParse): array;
 }

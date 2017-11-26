@@ -30,7 +30,16 @@ class Mt940Parser implements ParserInterface {
 			    return $this->convert($statement);
 		    }, $mt940Statements);
     }
-
+	
+	/**
+	 * @param string $fileToParse
+	 * @return Statement[]
+	 */
+	public function parseFile(string $fileToParse): array
+	{
+		return $this->parse(file_get_contents($fileToParse));
+	}
+	
     private function convert(Mt940Statement $stmt): Statement
     {
 	    $transactions = [];

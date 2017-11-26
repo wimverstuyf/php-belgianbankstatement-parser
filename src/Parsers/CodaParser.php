@@ -15,21 +15,38 @@ use Codelicious\Coda\Statements\Statement as CodaStatement;
  */
 class CodaParser implements ParserInterface {
 	
+	
 	/**
 	 * @param string $contentToParse
 	 * @return Statement[]
 	 */
 	public function parse(string $contentToParse): array
     {
+    	$contentAsArray = explode("\n", str_replace("\r", "", $contentToParse));
         $parser = new Parser();
-        $codaStatements = $parser->parse(explode("\n", $contentToParse));
+        $codaStatements = $parser->parse($contentAsArray);
 
         return array_map(
         	function(CodaStatement $statement) {
         		return $this->convert($statement);
 	        }, $codaStatements);
     }
-
+	
+	/**
+	 * @param string $fileToParse
+	 * @return Statement[]
+	 */
+	public function parseFile(string $fileToParse): array
+	{
+		$parser = new Parser();
+		$codaStatements = $parser->parseFile($fileToParse);
+		
+		return array_map(
+			function(CodaStatement $statement) {
+				return $this->convert($statement);
+			}, $codaStatements);
+	}
+	
     private function convert(CodaStatement $statement)
     {
         $transactions = [];

@@ -65,7 +65,7 @@ class ParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals("BETALING MET BANKKAART", $tr1->getAccount()->getNumber());
     }
     
-    public function testParseFile()
+    public function testParseFileCsv()
     {
 	    $parser = new Parser();
 	
@@ -81,8 +81,31 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 	    $this->assertEquals("MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015", $tr1->getMessage());
 	    $this->assertEquals("BETALING MET BANKKAART", $tr1->getAccount()->getNumber());
     }
-
-    private function getSampleMt940(): string
+	
+	public function testParseFileCoda()
+	{
+		$parser = new Parser();
+		
+		$statements = $parser->parseFile($this->getSampleFile('sample2.cod'), 'coda');
+		
+		$this->assertEquals(1, count($statements));
+	}
+	
+	public function testParseFileMT940()
+	{
+		$parser = new Parser();
+		
+		$statements = $parser->parseFile($this->getSampleFile('sample3.mt940'), 'mt940');
+		
+		$this->assertEquals(2, count($statements));
+	}
+	
+	private function getSampleFile(string $sampleFile): string
+	{
+		return __DIR__ . DIRECTORY_SEPARATOR .'Samples' . DIRECTORY_SEPARATOR . $sampleFile;
+	}
+	
+	private function getSampleMt940(): string
     {
         $content = array(
             "0000 01INGBNL2AXXXX00001",
@@ -117,11 +140,6 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 	    return implode("\n", $content);
     }
 	
-	private function getSampleFile(string $sampleFile): string
-	{
-		return __DIR__ . DIRECTORY_SEPARATOR .'Samples' . DIRECTORY_SEPARATOR . $sampleFile;
-	}
-
     private function getSampleCsv(): string
     {
         $content = array(
