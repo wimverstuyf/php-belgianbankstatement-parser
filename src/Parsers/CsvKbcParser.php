@@ -12,7 +12,7 @@ use UnexpectedValueException;
  * @author Wim Verstuyf (wim.verstuyf@codelicious.be)
  * @license http://opensource.org/licenses/GPL-2.0 GPL-2.0
  */
-class CsvBnpParibasParser extends CsvParser {
+class CsvKbcParser extends CsvParser {
 	
 	private function convertDate($dateString): DateTime
 	{
@@ -35,25 +35,25 @@ class CsvBnpParibasParser extends CsvParser {
 	 */
 	protected function parseLine(array $data): array
 	{
-		if (count($data) < 8) {
+		if (count($data) < 18) {
 			throw new UnexpectedValueException("CSV content invalid");
 		}
 		
-		$account = new Account("", "", trim($data[7]), "", "");
+		$account = new Account(trim($data[2]), "", trim($data[0]), trim($data[3]), "");
 		
 		return [$account, new Transaction(
 			new Account(
-				"",
-				"",
-				trim($data[5]),
-				(string)$data[4],
+				trim($data[14]),
+				trim($data[13]),
+				trim($data[12]),
+				(string)$data[3],
 				""
 			),
-			$this->convertDate((string)$data[1]),
-			$this->convertDate((string)$data[2]),
-			(float)str_replace(',', '.', $data[3]),
-			(string)$data[6],
-			""
+			$this->convertDate((string)$data[5]),
+			$this->convertDate((string)$data[7]),
+			(float)str_replace(',', '.', $data[8]),
+			trim($data[17]),
+			trim($data[16])
 		)];
 	}
 }

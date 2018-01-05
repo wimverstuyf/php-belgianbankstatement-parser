@@ -3,6 +3,7 @@
 namespace Codelicious\Tests\BelgianBankStatement;
 
 use Codelicious\BelgianBankStatement\Parsers\CsvBnpParibasParser;
+use UnexpectedValueException;
 
 class CsvBnpParibasParserTest extends \PHPUnit\Framework\TestCase
 {
@@ -38,6 +39,17 @@ class CsvBnpParibasParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals("NAAM VAN DE KLANT BE15 3215 3215 2185  BIC A32DEDF5 MEDEDELING : dit is een custom message     VALUTADATUM : 11/03/2015", $tr2->getMessage());
 	}
 	
+	/**
+	 * @expectedException        UnexpectedValueException
+	 * @expectedExceptionMessage CSV content invalid
+	 */
+	public function testInvalidSample()
+	{
+		$parser = new CsvBnpParibasParser();
+		
+		$parser->parse($this->getInvalidSample());
+	}
+	
 	private function getSample1(): string
 	{
 		$content = array(
@@ -51,4 +63,16 @@ class CsvBnpParibasParserTest extends \PHPUnit\Framework\TestCase
 		return implode("\n", $content);
 	}
 	
+	private function getInvalidSample(): string
+	{
+		$content = array(
+			'"JAAR + REFERTE"\t"UITVOERINGSDATUM"\t"VALUTADATUM"\t"BEDRAG"\t"MUNT V/D REKENING"\t"TEGENPARTIJ VAN DE VERRICHTING"\t"DETAILS"\t"REKENINGNUMMER"',
+			'"2015-0124"\t"13/01/2015"\t"13/01/2015"\t"-5,30"\t"EUR"\t"BETALING MET BANKKAART"\t"MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015"\t"BE58 2135 3215 3215 "\t',
+			'"2015-0118"\t"11/02/2015"\t"11/02/2015"\t"97,57"\t"EUR"\t"BE12 1566 1484 5045 "\t"NAAM VAN DE KLANT BE15 3215 3215 2185  BIC A32DEDF5 MEDEDELING : dit is een custom message     VALUTADATUM : 11/03/2015"\t"BE58 2135 3215 3215 "\t',
+			'"2015-0076"\t"14/03/2015"\t"16/03/2015"\t"-78,48"\t"EUR"\t"BE12 5498 2135 2158 "\t"SOME SHOP BE21354584321548 BIC VDSDEC21    VIA PC BANKING MEDEDELING : 215456321548 UITGEVOERD OP 13-03 VALUTADATUM : 16/03/2015"\t"BE58 2135 3215 3215 "\t',
+			'"2015-0075"\t"14/04/2015"\t"16/04/2015"\t"-80,46"\t"EUR"\t"BE15 2135 5148 2133 "\t"TELENET NV BE23156489435123 BIC KREDBEBB    VIA PC BANKING MEDEDELING : 321231564845 UITGEVOERD OP 13-04 VALUTADATUM : 16/04/2015"\t"BE58 2135 3215 3215 "\t',
+		);
+		
+		return implode("\n", $content);
+	}
 }
