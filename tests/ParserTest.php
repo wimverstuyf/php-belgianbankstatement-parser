@@ -48,11 +48,11 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals("0111111111 V. DE JONG KERKSTRAAT 1154 1234 BWENSCHEDE BET.KENM. 1004510036716378 3305330802AFLOSSINGSTERMIJN 188616 / 1E TERMIJN", $tr1->getMessage());
 	}
 	
-	public function testCsvParse()
+	public function testCsvBnpParibasParse()
 	{
 		$parser = new Parser();
 		
-		$statements = $parser->parse($this->getSampleCsv(), 'csv');
+		$statements = $parser->parse($this->getSampleCsv(), 'csv_bnpparibas');
 		
 		$this->assertEquals(1, count($statements));
 		$statement = $statements[0];
@@ -65,11 +65,25 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals("BETALING MET BANKKAART", $tr1->getAccount()->getNumber());
 	}
 	
+	public function testCsvKbcParse()
+	{
+		$parser = new Parser();
+		
+		$statements = $parser->parseFile($this->getSampleFile('sample4_kbc.csv'), 'csv_kbc');
+		
+		$this->assertEquals(1, count($statements));
+		$statement = $statements[0];
+		
+		$this->assertEquals("MyName", $statement->getAccount()->getName());
+		$tr2 = $statement->getTransactions()[1];
+		$this->assertEquals(89.05, $tr2->getAmount());
+	}
+	
 	public function testParseFileCsv()
 	{
 		$parser = new Parser();
 		
-		$statements = $parser->parseFile($this->getSampleFile('sample1.csv'), 'csv');
+		$statements = $parser->parseFile($this->getSampleFile('sample1.csv'), 'csv_bnpparibas');
 		
 		$this->assertEquals(1, count($statements));
 		$statement = $statements[0];

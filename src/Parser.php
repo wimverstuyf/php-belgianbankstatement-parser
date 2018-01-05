@@ -4,6 +4,7 @@ namespace Codelicious\BelgianBankStatement;
 
 use Codelicious\BelgianBankStatement\Parsers\CodaParser;
 use Codelicious\BelgianBankStatement\Parsers\CsvBnpParibasParser;
+use Codelicious\BelgianBankStatement\Parsers\CsvKbcParser;
 use Codelicious\BelgianBankStatement\Parsers\Mt940Parser;
 use Codelicious\BelgianBankStatement\Parsers\ParserInterface;
 use Codelicious\BelgianBankStatement\Values\Statement;
@@ -18,7 +19,7 @@ class Parser {
 	
 	/**
 	 * @param string $content content to parse
-	 * @param string $type csv or coda or mt940
+	 * @param string $type csv_bnpparisbas or csv_kbc or coda or mt940
 	 * @return Statement[]
 	 */
 	public function parse(string $content, string $type): array
@@ -28,7 +29,7 @@ class Parser {
 	
 	/**
 	 * @param string $file filepath of the file to parse
-	 * @param string $type csv or coda or mt940
+	 * @param string $type csv_bnpparisbas or csv_kbc or coda or mt940
 	 * @return Statement[]
 	 */
 	public function parseFile(string $file, string $type): array
@@ -43,9 +44,12 @@ class Parser {
 		
 		switch($type)
 		{
-			case "csv":
+			case "csv": // option "csv" deprecated
 			case "csv_bnpparibas":
 				$parser = new CsvBnpParibasParser();
+				break;
+			case "csv_kbc":
+				$parser = new CsvKbcParser();
 				break;
 			case "coda":
 				$parser = new CodaParser();
