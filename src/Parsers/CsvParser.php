@@ -14,7 +14,7 @@ use UnexpectedValueException;
  * @license http://opensource.org/licenses/GPL-2.0 GPL-2.0
  */
 abstract class CsvParser implements ParserInterface {
-	
+
 	/**
 	 * @param string $contentToParse
 	 * @return Statement[]
@@ -26,14 +26,14 @@ abstract class CsvParser implements ParserInterface {
 		$h = fopen($path, "rw+");
 		fwrite($h, $contentToParse);
 		fseek($h, 0);
-		
+
 		$statement = $this->parseFileHandle($h);
-		
+
 		fclose($h);
-		
+
 		return [$statement];
 	}
-	
+
 	/**
 	 * @param string $fileToParse
 	 * @return Statement[]
@@ -43,10 +43,10 @@ abstract class CsvParser implements ParserInterface {
 	{
 		return $this->parse(file_get_contents($fileToParse));
 	}
-	
+
 	abstract protected function getSeparator(): string;
 	abstract protected function parseLine(array $data): array;
-	
+
 	/**
 	 * @param $handle
 	 * @return Statement
@@ -58,22 +58,27 @@ abstract class CsvParser implements ParserInterface {
 		$isFirstLine = true;
 		$account = new Account("", "", "", "", "");
 		while (($data = fgetcsv($handle, 0, ';', '"')) !== FALSE) {
+			// skip empty lines
+			if (!$data || count($data) == 1 && $data[0] === null) {
+				continue;
+			}
+
 			if ($isFirstLine) {
 				// We don't need the first row, as it contains the column headers
 				$isFirstLine = false;
 			} else {
 				/** @var $lineAccount Account */
 				list($lineAccount, $transaction) = $this->parseLine($data);
-				
+
 				array_push(
 					$transactions,
 					$transaction
 				);
-				
+
 				if ($lineAccount->getName() || $lineAccount->getBic() ||
 					$lineAccount->getNumber() || $lineAccount->getCountryCode() ||
 					$lineAccount->getCurrencyCode()) {
-					
+
 					$account = new Account(
 						$lineAccount->getName()?:$account->getName(),
 						$lineAccount->getBic()?:$account->getBic(),
@@ -84,7 +89,7 @@ abstract class CsvParser implements ParserInterface {
 				}
 			}
 		}
-		
+
 		return new Statement(
 			new DateTime("0001-01-01"),
 			$account,

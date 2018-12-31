@@ -14,7 +14,7 @@ use Codelicious\Coda\Statements\Statement as CodaStatement;
  * @license http://opensource.org/licenses/GPL-2.0 GPL-2.0
  */
 class CodaParser implements ParserInterface {
-	
+
 	/**
 	 * @param string $contentToParse
 	 * @return Statement[]
@@ -24,13 +24,13 @@ class CodaParser implements ParserInterface {
 		$contentAsArray = explode("\n", str_replace("\r", "", $contentToParse));
 		$parser = new Parser();
 		$codaStatements = $parser->parse($contentAsArray);
-		
+
 		return array_map(
 			function(CodaStatement $statement) {
 				return $this->convert($statement);
 			}, $codaStatements);
 	}
-	
+
 	/**
 	 * @param string $fileToParse
 	 * @return Statement[]
@@ -39,13 +39,13 @@ class CodaParser implements ParserInterface {
 	{
 		$parser = new Parser();
 		$codaStatements = $parser->parseFile($fileToParse);
-		
+
 		return array_map(
 			function(CodaStatement $statement) {
 				return $this->convert($statement);
 			}, $codaStatements);
 	}
-	
+
 	private function convert(CodaStatement $statement)
 	{
 		$transactions = [];
@@ -60,6 +60,7 @@ class CodaParser implements ParserInterface {
 						$transaction->getAccount()->getCurrencyCode(),
 						""
 					),
+					'',
 					$transaction->getTransactionDate(),
 					$transaction->getValutaDate(),
 					$transaction->getAmount(),
@@ -68,7 +69,7 @@ class CodaParser implements ParserInterface {
 				)
 			);
 		}
-		
+
 		return new Statement(
 			$statement->getDate(),
 			new Account(

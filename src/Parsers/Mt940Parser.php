@@ -15,7 +15,7 @@ use Kingsquare\Banking\Statement as Mt940Statement;
  * @license http://opensource.org/licenses/GPL-2.0 GPL-2.0
  */
 class Mt940Parser implements ParserInterface {
-	
+
 	/**
 	 * @param string $contentToParse
 	 * @return Statement[]
@@ -24,13 +24,13 @@ class Mt940Parser implements ParserInterface {
 	{
 		$parser = new Mt940();
 		$mt940Statements = $parser->parse($contentToParse);
-		
+
 		return array_map(
 			function(Mt940Statement $statement) {
 				return $this->convert($statement);
 			}, $mt940Statements);
 	}
-	
+
 	/**
 	 * @param string $fileToParse
 	 * @return Statement[]
@@ -39,7 +39,7 @@ class Mt940Parser implements ParserInterface {
 	{
 		return $this->parse(file_get_contents($fileToParse));
 	}
-	
+
 	private function convert(Mt940Statement $stmt): Statement
 	{
 		$transactions = [];
@@ -55,6 +55,7 @@ class Mt940Parser implements ParserInterface {
 						"",
 						""
 					),
+					'',
 					new DateTime($tr->getEntryTimestamp('Y-m-d')),
 					new DateTime($tr->getValueTimestamp('Y-m-d')),
 					$tr->getPrice(),
@@ -63,7 +64,7 @@ class Mt940Parser implements ParserInterface {
 				)
 			);
 		}
-		
+
 		return new Statement(
 			new DateTime($stmt->getStartTimestamp('Y-m-d')),
 			new Account(
