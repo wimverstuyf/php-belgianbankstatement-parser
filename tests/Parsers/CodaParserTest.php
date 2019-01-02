@@ -9,46 +9,47 @@ class CodaParserTest extends \PHPUnit\Framework\TestCase
 	public function testSample1()
 	{
 		$parser = new CodaParser();
-		
+
 		$statements = $parser->parse($this->getSample1());
-		
+
 		$this->assertEquals(1, count($statements));
 		$statement = $statements[0];
-		
+
 		$this->assertEquals(3, count($statement->getTransactions()));
 		$this->assertEquals("2015-01-18", $statement->getDate()->format("Y-m-d"));
 		$this->assertEquals(4004.1, $statement->getInitialBalance());
 		$this->assertEquals(-500012.1, $statement->getNewBalance());
-		
+
 		$this->assertEquals("CODELICIOUS", $statement->getAccount()->getName());
 		$this->assertEquals("GEBABEBB", $statement->getAccount()->getBic());
 		$this->assertEquals("001548226815", $statement->getAccount()->getNumber());
 		$this->assertEquals("EUR", $statement->getAccount()->getCurrencyCode());
 		$this->assertEquals("BE", $statement->getAccount()->getCountryCode());
-		
+
 		$tr1 = $statement->getTransactions()[0];
 		$tr2 = $statement->getTransactions()[1];
 		$tr3 = $statement->getTransactions()[2];
-		
+
 		$this->assertEquals("2014-12-25", $tr1->getTransactionDate()->format('Y-m-d'));
 		$this->assertEquals("2014-12-25", $tr1->getValutaDate()->format('Y-m-d'));
 		$this->assertEquals(-767.823, $tr1->getAmount());
 		$this->assertEquals("112/4554/46812   813  ANOTHER MESSAGE  MESSAGE", $tr1->getMessage());
 		$this->assertEmpty($tr1->getStructuredMessage());
-		
+		$this->assertEmpty($tr1->getDescription());
+
 		$this->assertEquals("BVBA.BAKKER PIET", $tr1->getAccount()->getName());
 		$this->assertEquals("GEBCEEBB", $tr1->getAccount()->getBic());
 		$this->assertEquals("BE54805480215856", $tr1->getAccount()->getNumber());
 		$this->assertEquals("EUR", $tr1->getAccount()->getCurrencyCode());
 		$this->assertEmpty($tr1->getAccount()->getCountryCode());
-		
+
 		$this->assertEquals("ANOTHER MESSAGE  MESSAGE", $tr2->getMessage());
 		$this->assertEquals("112455446812", $tr2->getStructuredMessage());
-		
+
 		$this->assertEmpty($tr3->getAccount()->getName());
 		$this->assertEquals("GEBCEEBB", $tr3->getAccount()->getBic());
 	}
-	
+
 	private function getSample1(): string
 	{
 		$content = array(
@@ -70,7 +71,7 @@ class CodaParserTest extends \PHPUnit\Framework\TestCase
 			"4 00010005                      THIS IS A PUBLIC MESSAGE                                                                       0",
 			"9               000015000000016837520000000003967220                                                                           1",
 		);
-		
+
 		return implode("\n", $content);
 	}
 }
