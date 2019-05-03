@@ -4,6 +4,7 @@ namespace Codelicious\BelgianBankStatement;
 
 use Codelicious\BelgianBankStatement\Parsers\CodaParser;
 use Codelicious\BelgianBankStatement\Parsers\CsvBnpParibasParser;
+use Codelicious\BelgianBankStatement\Parsers\CsvBelfiusParser;
 use Codelicious\BelgianBankStatement\Parsers\CsvKbcParser;
 use Codelicious\BelgianBankStatement\Parsers\Mt940Parser;
 use Codelicious\BelgianBankStatement\Parsers\ParserInterface;
@@ -16,7 +17,7 @@ use InvalidArgumentException;
  * @license http://opensource.org/licenses/GPL-2.0 GPL-2.0
  */
 class Parser {
-	
+
 	/**
 	 * @param string $content content to parse
 	 * @param string $type csv_bnpparisbas or csv_kbc or coda or mt940
@@ -26,7 +27,7 @@ class Parser {
 	{
 		return $this->getParser($type)->parse($content);
 	}
-	
+
 	/**
 	 * @param string $file filepath of the file to parse
 	 * @param string $type csv_bnpparisbas or csv_kbc or coda or mt940
@@ -36,17 +37,20 @@ class Parser {
 	{
 		return $this->getParser($type)->parseFile($file);
 	}
-	
+
 	private function getParser(string $type): ParserInterface
 	{
 		/** @var ParserInterface|null $parser */
 		$parser = null;
-		
+
 		switch($type)
 		{
 			case "csv": // option "csv" deprecated
 			case "csv_bnpparibas":
 				$parser = new CsvBnpParibasParser();
+				break;
+			case "csv_belfius":
+				$parser = new CsvBelfiusParser();
 				break;
 			case "csv_kbc":
 				$parser = new CsvKbcParser();
@@ -60,7 +64,7 @@ class Parser {
 			default:
 				throw new InvalidArgumentException("type '$type' not valid");
 		}
-		
+
 		return $parser;
 	}
 }

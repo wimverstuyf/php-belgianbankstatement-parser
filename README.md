@@ -1,6 +1,6 @@
 # php-belgianbankstatement-parser
 Unified parser for several bank statement formats from Belgian banks.
-Supports CODA, MT940 and CSV (BNP Paribas / KBC)
+Supports CODA, MT940 and CSV (BNP Paribas / Belfius / KBC)
 
 [![Build Status](https://secure.travis-ci.org/wimverstuyf/php-belgianbankstatement-parser.png?branch=master)](https://travis-ci.org/wimverstuyf/php-belgianbankstatement-parser)
 
@@ -42,7 +42,7 @@ foreach ($statement->getTransactions() as $transaction) {
 
 echo $statement->newBalance() . "\n";
 ```
-    
+
 ## Statement structure
 
 *   `Codelicious\BelgianBankStatement\Statement`

@@ -9,12 +9,12 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 	public function testCodaParse()
 	{
 		$parser = new Parser();
-		
+
 		$statements = $parser->parse($this->getSampleCoda(), 'coda');
-		
+
 		$this->assertEquals(1, count($statements));
 		$statement = $statements[0];
-		
+
 		$this->assertEquals(3, count($statement->getTransactions()));
 		$this->assertEquals("2015-01-18", $statement->getDate()->format('Y-m-d'));
 		$this->assertEquals(4004.1, $statement->getInitialBalance());
@@ -26,16 +26,16 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals(-767.823, $tr1->getAmount());
 		$this->assertEquals("112/4554/46812   813  ANOTHER MESSAGE  MESSAGE", $tr1->getMessage());
 	}
-	
+
 	public function testMt940Parse()
 	{
 		$parser = new Parser();
-		
+
 		$statements = $parser->parse($this->getSampleMt940(), 'mt940');
-		
+
 		$this->assertEquals(1, count($statements));
 		$statement = $statements[0];
-		
+
 		$this->assertEquals(3, count($statement->getTransactions()));
 		$this->assertEquals("2010-07-22", $statement->getDate()->format('Y-m-d'));
 		$this->assertEquals(44.89, $statement->getInitialBalance());
@@ -47,13 +47,13 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals(0.56, $tr1->getAmount());
 		$this->assertEquals("0111111111 V. DE JONG KERKSTRAAT 1154 1234 BWENSCHEDE BET.KENM. 1004510036716378 3305330802AFLOSSINGSTERMIJN 188616 / 1E TERMIJN", $tr1->getMessage());
 	}
-	
+
 	public function testCsvBnpParibasParse()
 	{
 		$parser = new Parser();
-		
+
 		$statements = $parser->parse($this->getSampleCsv(), 'csv_bnpparibas');
-		
+
 		$this->assertEquals(1, count($statements));
 		$statement = $statements[0];
 		$this->assertEquals(4, count($statement->getTransactions()));
@@ -64,27 +64,55 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals("MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015", $tr1->getMessage());
 		$this->assertEquals("BETALING MET BANKKAART", $tr1->getAccount()->getNumber());
 	}
-	
+
 	public function testCsvKbcParse()
 	{
 		$parser = new Parser();
-		
+
 		$statements = $parser->parseFile($this->getSampleFile('sample4_kbc.csv'), 'csv_kbc');
-		
+
 		$this->assertEquals(1, count($statements));
 		$statement = $statements[0];
-		
+
 		$this->assertEquals("MyName", $statement->getAccount()->getName());
 		$tr2 = $statement->getTransactions()[1];
 		$this->assertEquals(89.05, $tr2->getAmount());
 	}
-	
+
+	public function testCsvBelfiusParse()
+	{
+		$parser = new Parser();
+
+		$statements = $parser->parseFile($this->getSampleFile('sample5_belfius.csv'), 'csv_belfius');
+
+		$this->assertEquals(1, count($statements));
+		$statement = $statements[0];
+
+		$this->assertEquals("BE25 1548 2158 2158", $statement->getAccount()->getNumber());
+		$this->assertCount(2, $statement->getTransactions());
+
+		$transaction = $statement->getTransactions()[0];
+
+		$this->assertEquals("CODEVARL (BELGIUM) NV", $transaction->getAccount()->getName());
+		$this->assertEquals("BBRUBEBB", $transaction->getAccount()->getBic());
+		$this->assertEquals("BE15 3215 5483 2315", $transaction->getAccount()->getNumber());
+		$this->assertEquals("EUR", $transaction->getAccount()->getCurrencyCode());
+		$this->assertEquals("BE", $transaction->getAccount()->getCountryCode());
+
+		$this->assertEquals("STORTING VAN BE15 3215 5483 2315 CODEVARL (BELGIUM) NV /A/ Loon / wedde REF. : 00354852 NAAR                  BE25 1548 2158 2158 MAYD DRIBBER                   REF. : 213545932 VAL. 25-05", $transaction->getDescription());
+		$this->assertEquals(new \DateTime("2019-05-25"), $transaction->getTransactionDate());
+		$this->assertEquals(new \DateTime("2019-05-25"), $transaction->getValutaDate());
+		$this->assertEquals(1237.84, $transaction->getAmount());
+		$this->assertEquals("/A/ Loon / wedde", $transaction->getMessage());
+		$this->assertEquals("", $transaction->getStructuredMessage());
+	}
+
 	public function testParseFileCsv()
 	{
 		$parser = new Parser();
-		
+
 		$statements = $parser->parseFile($this->getSampleFile('sample1.csv'), 'csv_bnpparibas');
-		
+
 		$this->assertEquals(1, count($statements));
 		$statement = $statements[0];
 		$this->assertEquals(4, count($statement->getTransactions()));
@@ -95,30 +123,30 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals("MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015", $tr1->getMessage());
 		$this->assertEquals("BETALING MET BANKKAART", $tr1->getAccount()->getNumber());
 	}
-	
+
 	public function testParseFileCoda()
 	{
 		$parser = new Parser();
-		
+
 		$statements = $parser->parseFile($this->getSampleFile('sample2.cod'), 'coda');
-		
+
 		$this->assertEquals(1, count($statements));
 	}
-	
+
 	public function testParseFileMT940()
 	{
 		$parser = new Parser();
-		
+
 		$statements = $parser->parseFile($this->getSampleFile('sample3.mt940'), 'mt940');
-		
+
 		$this->assertEquals(2, count($statements));
 	}
-	
+
 	private function getSampleFile(string $sampleFile): string
 	{
 		return __DIR__ . DIRECTORY_SEPARATOR .'Samples' . DIRECTORY_SEPARATOR . $sampleFile;
 	}
-	
+
 	private function getSampleMt940(): string
 	{
 		$content = array(
@@ -150,10 +178,10 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 			"ING TESTREKENING",
 			"XXX"
 		);
-		
+
 		return implode("\n", $content);
 	}
-	
+
 	private function getSampleCsv(): string
 	{
 		$content = array(
@@ -163,11 +191,11 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 			'"2015-0076";"14/03/2015";"16/03/2015";"-78,48";"EUR";"BE12 5498 2135 2158 ";"SOME SHOP BE21354584321548 BIC VDSDEC21    VIA PC BANKING MEDEDELING : 215456321548 UITGEVOERD OP 13-03 VALUTADATUM : 16/03/2015";"BE58 2135 3215 3215 ";',
 			'"2015-0075";"14/04/2015";"16/04/2015";"-80,46";"EUR";"BE15 2135 5148 2133 ";"TELENET NV BE23156489435123 BIC KREDBEBB    VIA PC BANKING MEDEDELING : 321231564845 UITGEVOERD OP 13-04 VALUTADATUM : 16/04/2015";"BE58 2135 3215 3215 ";',
 		);
-		
+
 		return implode("\n", $content);
 	}
-	
-	
+
+
 	private function getSampleCoda(): string
 	{
 		$content = array(
@@ -189,7 +217,7 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 			"4 00010005                      THIS IS A PUBLIC MESSAGE                                                                       0",
 			"9               000015000000016837520000000003967220                                                                           1",
 		);
-		
+
 		return implode("\n", $content);
 	}
 }
