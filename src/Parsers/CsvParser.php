@@ -70,22 +70,24 @@ abstract class CsvParser implements ParserInterface {
 				/** @var $lineAccount Account */
 				list($lineAccount, $transaction) = $this->parseLine($data);
 
-				array_push(
-					$transactions,
-					$transaction
-				);
-
-				if ($lineAccount->getName() || $lineAccount->getBic() ||
-					$lineAccount->getNumber() || $lineAccount->getCountryCode() ||
-					$lineAccount->getCurrencyCode()) {
-
-					$account = new Account(
-						$lineAccount->getName()?:$account->getName(),
-						$lineAccount->getBic()?:$account->getBic(),
-						$lineAccount->getNumber()?:$account->getNumber(),
-						$lineAccount->getCurrencyCode()?:$account->getCurrencyCode(),
-						$lineAccount->getCountryCode()?:$account->getCountryCode()
+				if ($lineAccount && $transaction) {
+					array_push(
+						$transactions,
+						$transaction
 					);
+
+					if ($lineAccount->getName() || $lineAccount->getBic() ||
+						$lineAccount->getNumber() || $lineAccount->getCountryCode() ||
+						$lineAccount->getCurrencyCode()) {
+
+						$account = new Account(
+							$lineAccount->getName()?:$account->getName(),
+							$lineAccount->getBic()?:$account->getBic(),
+							$lineAccount->getNumber()?:$account->getNumber(),
+							$lineAccount->getCurrencyCode()?:$account->getCurrencyCode(),
+							$lineAccount->getCountryCode()?:$account->getCountryCode()
+						);
+					}
 				}
 			}
 		}

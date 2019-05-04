@@ -4,7 +4,7 @@
   "keywords": ["mt940", "coda", "parsing", "bank", "belgium"],
   "homepage": "https://github.com/wimverstuyf/php-belgianbankstatement-parser",
   "type": "library",
-  "license": "GPL-2.0",
+  "license": "GPL-2.0-only",
   "authors": [
     { "name": "Wim Verstuyf", "email": "wim.verstuyf@codelicious.be" }
   ],

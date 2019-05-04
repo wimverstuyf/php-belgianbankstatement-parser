@@ -1,0 +1,15 @@
+Boekingsdatum vanaf;
+Boekingsdatum tot en met;
+Bedrag vanaf;
+Bedrag tot en met;
+Afschriftnummer vanaf;
+Afschriftnummer tot en met;
+Mededeling;
+Naam tegenpartij bevat;
+Rekening tegenpartij;
+Laatste saldo;1.617,97 EUR
+Datum/uur van het laatste saldo;27/05/2019 17:32:28
+;
+Rekening;Boekingsdatum;Afschriftnummer;Transactienummer;Rekening tegenpartij;Naam tegenpartij bevat;Straat en nummer;Postcode en plaats;Transactie;Valutadatum;Bedrag;Devies;BIC;Landcode;Mededelingen
+BE25 1548 2158 2158;25/05/2019;00006;85;BE15 3215 5483 2315;CODEVARL (BELGIUM) NV;STRAATNUMMER 11;1000        BRUSSEL;STORTING VAN BE15 3215 5483 2315 CODEVARL (BELGIUM) NV /A/ Loon / wedde REF. : 00354852 NAAR                  BE25 1548 2158 2158 MAYD DRIBBER                   REF. : 213545932 VAL. 25-05;25/05/2019;1237,84;EUR;BBRUBEBB;BE;/A/ Loon / wedde
+BE25 1548 2158 2158;26/05/2019;00006;86;BE20 3250 3215 3581;watermij;;;OVERSCHRIJVING BELFIUS DIRECT NET NAAR watermij -    +++324/3587/32507+++                                   REF. : 0321548986Q285 VAL. 26-05;26/05/2019;-52,18;EUR;GKCCBEBB;;+++324/3587/32507+++
