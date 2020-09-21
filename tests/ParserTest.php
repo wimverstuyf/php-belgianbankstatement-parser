@@ -135,6 +135,34 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals("", $transaction->getStructuredMessage());
 	}
 
+	public function testCsvBelfiusParseWithHeaderInfoWithNewlines()
+	{
+		$parser = new Parser();
+
+		$statements = $parser->parseFile($this->getSampleFile('sample7_belfius.csv'), 'csv_belfius');
+
+		$this->assertEquals(1, count($statements));
+		$statement = $statements[0];
+
+		$this->assertEquals("BE25 1548 2158 2158", $statement->getAccount()->getNumber());
+		$this->assertCount(2, $statement->getTransactions());
+
+		$transaction = $statement->getTransactions()[0];
+
+		$this->assertEquals("CODEVARL (BELGIUM) NV", $transaction->getAccount()->getName());
+		$this->assertEquals("BBRUBEBB", $transaction->getAccount()->getBic());
+		$this->assertEquals("BE15 3215 5483 2315", $transaction->getAccount()->getNumber());
+		$this->assertEquals("EUR", $transaction->getAccount()->getCurrencyCode());
+		$this->assertEquals("BE", $transaction->getAccount()->getCountryCode());
+
+		$this->assertEquals("STORTING VAN BE15 3215 5483 2315 CODEVARL (BELGIUM) NV /A/ Loon / wedde REF. : 00354852 NAAR                  BE25 1548 2158 2158 MAYD DRIBBER                   REF. : 213545932 VAL. 25-05", $transaction->getDescription());
+		$this->assertEquals(new \DateTime("2019-05-25"), $transaction->getTransactionDate());
+		$this->assertEquals(new \DateTime("2019-05-25"), $transaction->getValutaDate());
+		$this->assertEquals(1237.84, $transaction->getAmount());
+		$this->assertEquals("/A/ Loon / wedde", $transaction->getMessage());
+		$this->assertEquals("", $transaction->getStructuredMessage());
+	}
+
 	public function testParseFileCsv()
 	{
 		$parser = new Parser();

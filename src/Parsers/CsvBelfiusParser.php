@@ -35,7 +35,7 @@ class CsvBelfiusParser extends CsvParser {
      */
     protected function parseLine(array $data): array
     {
-        $headers = ['Boekingsdatum vanaf', 'Boekingsdatum tot en met', 'Bedrag vanaf', 'Bedrag tot en met', 'Afschriftnummer vanaf', 'Afschriftnummer tot en met', 'Mededeling', 'Naam tegenpartij bevat', 'Rekening tegenpartij', 'Laatste saldo', 'Datum/uur van het laatste saldo', 'Rekening'];
+        $headers = ['Boekingsdatum vanaf', 'Boekingsdatum tot en met', 'Bedrag vanaf', 'Bedrag tot en met', 'Rekeninguittrekselnummer vanaf', 'Rekeninguittrekselnummer tot en met', 'Afschriftnummer vanaf', 'Afschriftnummer tot en met', 'Mededeling', 'Naam tegenpartij bevat', 'Rekening tegenpartij', 'Laatste saldo', 'Datum/uur van het laatste saldo', 'Rekening'];
 
         if (in_array($data[0], $headers) || ($data[0] == '' && count($data) < 3)) {
             return [null, null];
