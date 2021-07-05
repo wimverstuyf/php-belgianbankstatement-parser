@@ -42,8 +42,8 @@ class CsvBnpParibasParserTest extends \PHPUnit\Framework\TestCase
 
 	public function testInvalidSample()
 	{
-		$this->expectedExceptionMessage('CSV content invalid');
-		$this->expectedException(UnexpectedValueException::class);
+		$this->expectExceptionMessage('CSV content invalid');
+		$this->expectException(UnexpectedValueException::class);
 
 		$parser = new CsvBnpParibasParser();
 
