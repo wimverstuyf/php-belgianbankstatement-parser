@@ -9,7 +9,7 @@
     { "name": "Wim Verstuyf", "email": "wim.verstuyf@codelicious.be" }
   ],
   "require": {
-    "php": ">=7.3",
+    "php": ">=7.0",
     "codelicious/php-coda-parser": "^2.1",
     "kingsquare/php-mt940": "^1.1"
   },
