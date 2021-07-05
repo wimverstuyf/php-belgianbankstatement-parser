@@ -40,12 +40,11 @@ class CsvBnpParibasParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals("NAAM VAN DE KLANT BE15 3215 3215 2185  BIC A32DEDF5 MEDEDELING : dit is een custom message     VALUTADATUM : 11/03/2015", $tr2->getMessage());
 	}
 
-	/**
-	 * @expectedException        UnexpectedValueException
-	 * @expectedExceptionMessage CSV content invalid
-	 */
 	public function testInvalidSample()
 	{
+		$this->expectedExceptionMessage('CSV content invalid');
+		$this->expectedException(UnexpectedValueException::class);
+
 		$parser = new CsvBnpParibasParser();
 
 		$parser->parse($this->getInvalidSample());
