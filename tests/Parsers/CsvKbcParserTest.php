@@ -56,7 +56,7 @@ class CsvKbcParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals("2015-12-30", $tr4->getTransactionDate()->format('Y-m-d'));
 		$this->assertEquals("2015-12-30", $tr4->getValutaDate()->format('Y-m-d'));
 		$this->assertEquals(62.77, $tr4->getAmount());
-		$this->assertEquals("179446761008", $tr4->getStructuredMessage());
+		$this->assertEquals("+++179/4467/61008+++", $tr4->getStructuredMessage());
 		$this->assertEmpty($tr4->getMessage());
 
 		$this->assertEquals("Client4", $tr4->getAccount()->getName());
@@ -69,7 +69,7 @@ class CsvKbcParserTest extends \PHPUnit\Framework\TestCase
 			"BE15648432165482;MyReference;MyName;EUR;  02016003;04/01/2016;EUROPESE OVERSCHRIJVING VAN          04-01;04/01/2016;49,00;1289,43;49,00;              ;BE21 1548 2315 1548;ARSPBE11;Client1;Address1;                                   ;Description5",
 			"BE15648432165482;MyReference;MyName;EUR;  02016002;03/01/2016;EUROPESE OVERSCHRIJVING VAN          03-01;04/01/2016;89,05;1338,43;89,05;              ;BE32 3154 1548 1253;KREDBEBB;Client2;Address 2;                                   ;Description4",
 			"BE15648432165482;MyReference;MyName;EUR;  02016001;02/01/2016;EUROPESE OVERSCHRIJVING VAN          02-01;02/01/2016;79,00;1417,43;79,00;              ;BE21 2315 8432 2315;KREDBEBB;Client3;Address 3;                                   ;Description3",
-			"BE15648432165482;MyReference;MyName;EUR;  02015354;30/12/2015;EUROPESE OVERSCHRIJVING VAN          30-12;30/12/2015;62,77;1480,20;62,77;              ;BE21 2315 2158 2315;KREDBEBB;Client4;Address 4;179446761008;"
+			"BE15648432165482;MyReference;MyName;EUR;  02015354;30/12/2015;EUROPESE OVERSCHRIJVING VAN          30-12;30/12/2015;62,77;1480,20;62,77;              ;BE21 2315 2158 2315;KREDBEBB;Client4;Address 4;***179/4467/61008+++;"
 		);
 
 		return implode("\n", $content);

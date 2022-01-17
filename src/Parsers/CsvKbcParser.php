@@ -54,7 +54,7 @@ class CsvKbcParser extends CsvParser {
 			$this->convertDate((string)$data[7]),
 			(float)str_replace(',', '.', $data[8]),
 			trim($data[17]),
-			trim($data[16])
+			str_replace('*', '+', trim($data[16]))
 		)];
 	}
 }
