@@ -19,6 +19,8 @@ class CsvBelfiusParser extends CsvParser {
         $date = $dateString;
         if (mb_strlen($dateString) == 10) {
             $date = substr($dateString, 6, 4) . "-" . substr($dateString, 3, 2) . "-" . substr($dateString, 0, 2);
+        } elseif (mb_strlen($dateString) == 8) {
+            $date = "20" . substr($dateString, 6, 2) . "-" . substr($dateString, 3, 2) . "-" . substr($dateString, 0, 2);
         }
 
         return new DateTime($date);
