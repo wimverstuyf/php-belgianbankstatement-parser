@@ -18,7 +18,7 @@ class CsvBnpParibasParserTest extends \PHPUnit\Framework\TestCase
 
 		$this->assertEquals(4, count($statement->getTransactions()));
 
-		$this->assertEquals("BE58 2135 3215 3215", $statement->getAccount()->getNumber());
+		$this->assertEquals("BE58213532153215", $statement->getAccount()->getNumber());
 
 		$tr1 = $statement->getTransactions()[0];
 		$tr2 = $statement->getTransactions()[1];
@@ -28,7 +28,7 @@ class CsvBnpParibasParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals("2015-01-13", $tr1->getTransactionDate()->format('Y-m-d'));
 		$this->assertEquals("2015-01-13", $tr1->getValutaDate()->format('Y-m-d'));
 		$this->assertEquals(-5.3, $tr1->getAmount());
-		$this->assertEquals("MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015", $tr1->getMessage());
+		$this->assertEquals("515485251", $tr1->getMessage());
 		$this->assertEmpty($tr1->getStructuredMessage());
 		$this->assertEmpty($tr1->getDescription());
 
@@ -36,8 +36,8 @@ class CsvBnpParibasParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals("EUR", $tr1->getAccount()->getCurrencyCode());
 		$this->assertEmpty($tr1->getAccount()->getCountryCode());
 
-		$this->assertEquals("BE12 1566 1484 5045", $tr2->getAccount()->getNumber());
-		$this->assertEquals("NAAM VAN DE KLANT BE15 3215 3215 2185  BIC A32DEDF5 MEDEDELING : dit is een custom message     VALUTADATUM : 11/03/2015", $tr2->getMessage());
+		$this->assertEquals("BE12156614845045", $tr2->getAccount()->getNumber());
+		$this->assertEquals("dit is een custom message", $tr2->getMessage());
 	}
 
 	public function testInvalidSample()
@@ -53,11 +53,12 @@ class CsvBnpParibasParserTest extends \PHPUnit\Framework\TestCase
 	private function getSample1(): string
 	{
 		$content = array(
-			'"JAAR + REFERTE";"UITVOERINGSDATUM";"VALUTADATUM";"BEDRAG";"MUNT V/D REKENING";"TEGENPARTIJ VAN DE VERRICHTING";"DETAILS";"REKENINGNUMMER"',
-			'"2015-0124";"13/01/2015";"13/01/2015";"-5,30";"EUR";"BETALING MET BANKKAART";"MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015";"BE58 2135 3215 3215 ";',
-			'"2015-0118";"11/02/2015";"11/02/2015";"97,57";"EUR";"BE12 1566 1484 5045 ";"NAAM VAN DE KLANT BE15 3215 3215 2185  BIC A32DEDF5 MEDEDELING : dit is een custom message     VALUTADATUM : 11/03/2015";"BE58 2135 3215 3215 ";',
-			'"2015-0076";"14/03/2015";"16/03/2015";"-78,48";"EUR";"BE12 5498 2135 2158 ";"SOME SHOP BE21354584321548 BIC VDSDEC21    VIA PC BANKING MEDEDELING : 215456321548 UITGEVOERD OP 13-03 VALUTADATUM : 16/03/2015";"BE58 2135 3215 3215 ";',
-			'"2015-0075";"14/04/2015";"16/04/2015";"-80,46";"EUR";"BE15 2135 5148 2133 ";"TELENET NV BE23156489435123 BIC KREDBEBB    VIA PC BANKING MEDEDELING : 321231564845 UITGEVOERD OP 13-04 VALUTADATUM : 16/04/2015";"BE58 2135 3215 3215 ";',
+			'Volgnummer;Uitvoeringsdatum;Valutadatum;Bedrag;Valuta rekening;Rekeningnummer;Type verrichting;Tegenpartij;Naam van de tegenpartij;Mededeling;Details;Status;Reden van weigering',
+			'',
+			'2015-0124;13/01/2015;13/01/2015;-5,30;EUR;BE58213532153215;Betaling met bankkaart;BETALING MET BANKKAART;EEN WINKEL;515485251;MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015;Geaccepteerd;',
+			'2015-0118;11/02/2015;11/02/2015;97,57;EUR;BE58213532153215;Overschrijving in euro;BE12156614845045;NAAM VAN DE KLANT;dit is een custom message;BE15 3215 3215 2185  BIC A32DEDF5 MEDEDELING : dit is een custom message     VALUTADATUM : 11/03/2015;Geaccepteerd;',
+			'2015-0076;14/03/2015;16/03/2015;-78,48;EUR;BE58213532153215;Overschrijving in euro;BE12549821352158;SOME SHOP;215456321548;BE21354584321548 BIC VDSDEC21    VIA PC BANKING MEDEDELING : 215456321548 UITGEVOERD OP 13-03 VALUTADATUM : 16/03/2015;Geaccepteerd;',
+			'2015-0075;14/04/2015;16/04/2015;-80,46;EUR;BE58213532153215;Overschrijving in euro;BE15213551482133;TELENET NV;321231564845; BE23156489435123 BIC KREDBEBB    VIA PC BANKING MEDEDELING : 321231564845 UITGEVOERD OP 13-04 VALUTADATUM : 16/04/2015;Geaccepteerd;'
 		);
 
 		return implode("\n", $content);
@@ -66,11 +67,12 @@ class CsvBnpParibasParserTest extends \PHPUnit\Framework\TestCase
 	private function getInvalidSample(): string
 	{
 		$content = array(
-			'"JAAR + REFERTE"\t"UITVOERINGSDATUM"\t"VALUTADATUM"\t"BEDRAG"\t"MUNT V/D REKENING"\t"TEGENPARTIJ VAN DE VERRICHTING"\t"DETAILS"\t"REKENINGNUMMER"',
-			'"2015-0124"\t"13/01/2015"\t"13/01/2015"\t"-5,30"\t"EUR"\t"BETALING MET BANKKAART"\t"MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015"\t"BE58 2135 3215 3215 "\t',
-			'"2015-0118"\t"11/02/2015"\t"11/02/2015"\t"97,57"\t"EUR"\t"BE12 1566 1484 5045 "\t"NAAM VAN DE KLANT BE15 3215 3215 2185  BIC A32DEDF5 MEDEDELING : dit is een custom message     VALUTADATUM : 11/03/2015"\t"BE58 2135 3215 3215 "\t',
-			'"2015-0076"\t"14/03/2015"\t"16/03/2015"\t"-78,48"\t"EUR"\t"BE12 5498 2135 2158 "\t"SOME SHOP BE21354584321548 BIC VDSDEC21    VIA PC BANKING MEDEDELING : 215456321548 UITGEVOERD OP 13-03 VALUTADATUM : 16/03/2015"\t"BE58 2135 3215 3215 "\t',
-			'"2015-0075"\t"14/04/2015"\t"16/04/2015"\t"-80,46"\t"EUR"\t"BE15 2135 5148 2133 "\t"TELENET NV BE23156489435123 BIC KREDBEBB    VIA PC BANKING MEDEDELING : 321231564845 UITGEVOERD OP 13-04 VALUTADATUM : 16/04/2015"\t"BE58 2135 3215 3215 "\t',
+			'Volgnummer\tUitvoeringsdatum\tValutadatum\tBedrag\tValuta rekening\tRekeningnummer\tType verrichting\tTegenpartij\tNaam van de tegenpartij\tMededeling\tDetails\tStatus\tReden van weigering',
+			'',
+			'2015-0124\t13/01/2015\t13/01/2015\t-5,30\tEUR\tBE58213532153215\tBetaling met bankkaart\tBETALING MET BANKKAART\tEEN WINKEL\t515485251\tMET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015\tGeaccepteerd\t',
+			'2015-0118\t11/02/2015\t11/02/2015\t97,57\tEUR\tBE58213532153215\tOverschrijving in euro\tBE12156614845045\tNAAM VAN DE KLANT\tdit is een custom message\tBE15 3215 3215 2185  BIC A32DEDF5 MEDEDELING : dit is een custom message     VALUTADATUM : 11/03/2015\tGeaccepteerd\t',
+			'2015-0076\t14/03/2015\t16/03/2015\t-78,48\tEUR\tBE58213532153215\tOverschrijving in euro\tBE12549821352158\tSOME SHOP\t215456321548\tBE21354584321548 BIC VDSDEC21    VIA PC BANKING MEDEDELING : 215456321548 UITGEVOERD OP 13-03 VALUTADATUM : 16/03/2015\tGeaccepteerd\t',
+			'2015-0075\t14/04/2015\t16/04/2015\t-80,46\tEUR\tBE58213532153215\tOverschrijving in euro\tBE15213551482133\tTELENET NV\t321231564845\t BE23156489435123 BIC KREDBEBB    VIA PC BANKING MEDEDELING : 321231564845 UITGEVOERD OP 13-04 VALUTADATUM : 16/04/2015\tGeaccepteerd\t'
 		);
 
 		return implode("\n", $content);
