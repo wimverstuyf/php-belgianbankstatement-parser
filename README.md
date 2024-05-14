@@ -1,4 +1,5 @@
 # php-belgianbankstatement-parser
+
 Unified parser for several bank statement formats from Belgian banks.
 Supports CODA, MT940 and CSV (BNP Paribas / Belfius / KBC / ING)
 
@@ -41,24 +42,41 @@ foreach ($statement->getTransactions() as $transaction) {
 echo $statement->newBalance() . "\n";
 ```
 
+## Encoding considerations
+
+It's possible that non UTF-8 characters are present in the statements.
+In order to unify the encoding of your ingested statements, you might want to consider converting the encoding to UTF-8.
+
+```php
+$content = file_get_contents($_FILES['csv_file']['tmp_name']);
+
+if (mb_detect_encoding($content, ['UTF-8', 'ISO-8859-1']) === 'ISO-8859-1') {
+  // use mb_convert_encoding($content, to_encoding, from_encoding) to convert to UTF-8
+  $content = mb_convert_encoding($content, "UTF-8", "ISO-8859-1");
+}
+
+$content = str_replace("\r", "", $content);
+$statements = $parser->parse($content, 'csv_kbc');
+```
+
 ## Statement structure
 
-*   `Codelicious\BelgianBankStatement\Statement`
-    *   `Date` Date of the supplied file (format YYYY-MM-DD)
-    *   `Account` Account for which the statements were created. An object implementing `Codelicious\BelgianBankStatement\Account`
-    *   `InitialBalance` Balance of the account before the transactions were processed. Up to 3 decimals.
-    *   `NewBalance` Balance of the account after the transactions were processed. Up to 3 decimals.
-    *   `Transactions` A list of transactions implemented as `Codelicious\BelgianBankStatement\Transaction`
-*   `Codelicious\BelgianBankStatement\Account`
-    *   `Name` Name of the holder of the account
-    *   `Bic` Bankcode of the account
-    *   `Number` Banknumber of the account
-    *   `CurrencyCode` Currency of the account
-    *   `CountryCode` Country of the account
-*   `Codelicious\BelgianBankStatement\Transaction`
-    *   `Account` Account of the other party of the transaction. An object implementing `Codelicious\BelgianBankStatement\Account`
-    *   `TransactionDate` Date on which the transaction was requested
-    *   `ValutaDate` Date on which the transaction was executed by the bank
-    *   `Amount` Amount of the transaction. Up to 3 decimals. A negative number for credit transactions.
-    *   `Message` Message of the transaction
-    *   `StructuredMessage` Structured messages of the transaction (if available)
+* `Codelicious\BelgianBankStatement\Statement`
+  * `Date` - Date of the supplied file (format YYYY-MM-DD)
+  * `Account` - Account for which the statements were created. An object implementing `Codelicious\BelgianBankStatement\Account`
+  * `InitialBalance` - Balance of the account before the transactions were processed. Up to 3 decimals.
+  * `NewBalance` - Balance of the account after the transactions were processed. Up to 3 decimals.
+  * `Transactions` - A list of transactions implemented as `Codelicious\BelgianBankStatement\Transaction`
+* `Codelicious\BelgianBankStatement\Account`
+  * `Name` - Name of the holder of the account
+  * `Bic` - Bankcode of the account
+  * `Number` - Banknumber of the account
+  * `CurrencyCode` - Currency of the account
+  * `CountryCode` - Country of the account
+* `Codelicious\BelgianBankStatement\Transaction`
+  * `Account` - Account of the other party of the transaction. An object implementing `Codelicious\BelgianBankStatement\Account`
+  * `TransactionDate` - Date on which the transaction was requested
+  * `ValutaDate` - Date on which the transaction was executed by the bank
+  * `Amount` - Amount of the transaction. Up to 3 decimals. A negative number for credit transactions.
+  * `Message` - Message of the transaction
+  * `StructuredMessage` - Structured messages of the transaction (if available)
