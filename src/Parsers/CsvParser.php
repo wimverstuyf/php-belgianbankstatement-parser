@@ -25,7 +25,7 @@ abstract class CsvParser implements ParserInterface {
 		$path = 'php://memory';
 		$h = fopen($path, "rw+");
 		fwrite($h, $contentToParse);
-		fseek($h, 0);
+		fseek($h, 1);
 
 		$statement = $this->parseFileHandle($h);
 
