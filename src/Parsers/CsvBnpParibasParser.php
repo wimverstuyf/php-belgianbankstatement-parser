@@ -49,7 +49,7 @@ class CsvBnpParibasParser extends CsvParser {
 				(string)$data[4],
 				""
 			),
-			'',
+			(string)$data[10],
 			$this->convertDate((string)$data[1]),
 			$this->convertDate((string)$data[2]),
 			(float)str_replace(',', '.', $data[3]),
