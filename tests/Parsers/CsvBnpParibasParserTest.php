@@ -30,7 +30,7 @@ class CsvBnpParibasParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals(-5.3, $tr1->getAmount());
 		$this->assertEquals("515485251", $tr1->getMessage());
 		$this->assertEmpty($tr1->getStructuredMessage());
-		$this->assertEmpty($tr1->getDescription());
+		$this->assertEquals("MET KAART 2131 02XX XXXX X318 2 EEN WINKEL      9000 13-01-2015 VALUTADATUM : 13/01/2015", $tr1->getDescription());
 
 		$this->assertEquals("BETALING MET BANKKAART", $tr1->getAccount()->getNumber());
 		$this->assertEquals("EUR", $tr1->getAccount()->getCurrencyCode());

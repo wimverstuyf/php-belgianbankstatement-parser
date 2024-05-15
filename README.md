@@ -45,18 +45,13 @@ echo $statement->newBalance() . "\n";
 ## Encoding considerations
 
 It's possible that non UTF-8 characters are present in the statements.
-In order to unify the encoding of your ingested statements, you might want to consider converting the encoding to UTF-8.
+In order to unify the encoding of your ingested statements, you might want to consider converting the encoding to UTF-8 before parsing.
 
 ```php
-$content = file_get_contents($_FILES['csv_file']['tmp_name']);
-
 if (mb_detect_encoding($content, ['UTF-8', 'ISO-8859-1']) === 'ISO-8859-1') {
   // use mb_convert_encoding($content, to_encoding, from_encoding) to convert to UTF-8
   $content = mb_convert_encoding($content, "UTF-8", "ISO-8859-1");
 }
-
-$content = str_replace("\r", "", $content);
-$statements = $parser->parse($content, 'csv_kbc');
 ```
 
 ## Statement structure
