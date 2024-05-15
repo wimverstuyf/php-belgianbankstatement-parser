@@ -12,3 +12,5 @@ jobs:
         php-version: '7.4'
     - uses: php-actions/composer@v5
     - uses: php-actions/phpunit@v3
+      with:
+        version: 9.5
