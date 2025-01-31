@@ -59,6 +59,9 @@ class Parser {
 			case "csv_ing":
 				$parser = new CsvIngParser();
 				break;
+			case "csv_triodos":
+				$parser = new CsvTriodosParser();
+				break;
 			case "coda":
 				$parser = new CodaParser();
 				break;

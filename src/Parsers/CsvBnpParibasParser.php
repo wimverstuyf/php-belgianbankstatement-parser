@@ -39,22 +39,28 @@ class CsvBnpParibasParser extends CsvParser {
 			throw new UnexpectedValueException("CSV content invalid");
 		}
 
-		$account = new Account("", "", trim($data[5]), "", "");
+		$account = new Account(
+			"",                // accountNumber
+			"",                // bic
+			trim($data[5]),    // name
+			"",                // currency
+			""                 // countryCode
+		);
 
 		return [$account, new Transaction(
 			new Account(
-				trim($data[8]),
-				"",
-				trim($data[7]),
-				(string)$data[4],
-				""
+				trim($data[8]),    // accountNumber
+				"",                // bic
+				trim($data[7]),    // name
+				(string)$data[4],  // currency
+				""                 // countryCode
 			),
-			(string)$data[10],
-			$this->convertDate((string)$data[1]),
-			$this->convertDate((string)$data[2]),
-			(float)str_replace(',', '.', $data[3]),
-			(string)$data[9],
-			""
+			(string)$data[10],                           // statementLine
+			$this->convertDate((string)$data[1]),        // transactionDate
+			$this->convertDate((string)$data[2]),        // valueDate
+			(float)str_replace(',', '.', $data[3]),      // amount
+			(string)$data[9],                            // message
+			""                                           // extraDetails
 		)];
 	}
 }

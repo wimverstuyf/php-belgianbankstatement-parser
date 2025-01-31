@@ -49,18 +49,18 @@ class Mt940Parser implements ParserInterface {
 				$transactions,
 				new Transaction(
 					new Account(
-						$tr->getAccountName(),
-						"",
-						$tr->getAccount(),
-						"",
-						""
+						$tr->getAccountName(),    						// name
+						"",                       						// bic
+						$tr->getAccount(),        						// accountNumber
+						"",                       						// currency
+						""                        						// countryCode
 					),
-					'',
-					new DateTime($tr->getEntryTimestamp('Y-m-d')),
-					new DateTime($tr->getValueTimestamp('Y-m-d')),
-					$tr->getPrice(),
-					$tr->getDescription(),
-					""
+					'',                          						// statementLine
+					new DateTime($tr->getEntryTimestamp('Y-m-d')),    	// transactionDate
+					new DateTime($tr->getValueTimestamp('Y-m-d')),    	// valueDate
+					$tr->getPrice(),             						// amount
+					$tr->getDescription(),       						// message
+					""                           						// extraDetails
 				)
 			);
 		}

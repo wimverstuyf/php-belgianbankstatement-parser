@@ -12,7 +12,7 @@ use UnexpectedValueException;
  * @author Wim Verstuyf (wim.verstuyf@codelicious.be)
  * @license http://opensource.org/licenses/GPL-2.0 GPL-2.0
  */
-class CsvIngParser extends CsvParser {
+class CsvTriodosParser extends CsvParser {
 
 	private function convertDate($dateString): DateTime
 	{
@@ -40,27 +40,27 @@ class CsvIngParser extends CsvParser {
 		}
 
 		$account = new Account(
-			trim($data[1]),    // accountNumber
+			"",                // accountNumber
 			"",                // bic
-			trim($data[0]),    // name
+			trim($data[5]),    // name
 			"",                // currency
 			""                 // countryCode
 		);
 
 		return [$account, new Transaction(
 			new Account(
-				"",                // accountNumber
+				trim($data[8]),    // accountNumber
 				"",                // bic
-				trim($data[2]),    // name
-				(string)$data[7],  // currency
+				trim($data[7]),    // name
+				(string)$data[4],  // currency
 				""                 // countryCode
 			),
-			trim($data[8]),                             // statementLine
-			$this->convertDate((string)$data[4]),       // transactionDate
-			$this->convertDate((string)$data[5]),       // valueDate
-			(float)str_replace(',', '.', $data[6]),     // amount
-			trim($data[10]),                            // message
-			""                                          // extraDetails
+			(string)$data[10],                           // statementLine
+			$this->convertDate((string)$data[1]),        // transactionDate
+			$this->convertDate((string)$data[2]),        // valueDate
+			(float)str_replace(',', '.', $data[3]),      // amount
+			(string)$data[9],                            // message
+			""                                           // extraDetails
 		)];
 	}
 }

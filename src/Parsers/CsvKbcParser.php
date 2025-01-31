@@ -39,22 +39,28 @@ class CsvKbcParser extends CsvParser {
 			throw new UnexpectedValueException("CSV content invalid");
 		}
 
-		$account = new Account(trim($data[2]), "", trim($data[0]), trim($data[3]), "");
+		$account = new Account(
+			trim($data[2]),    	// accountNumber
+			"",               	// bic
+			trim($data[0]),    	// name
+			trim($data[3]),    	// currency
+			""                	// countryCode
+		);
 
 		return [$account, new Transaction(
 			new Account(
-				trim($data[14]),
-				trim($data[13]),
-				trim($data[12]),
-				(string)$data[3],
-				""
+				trim($data[14]),    	// accountNumber
+				trim($data[13]),    	// bic
+				trim($data[12]),    	// name
+				(string)$data[3],   	// currency
+				""                  	// countryCode
 			),
-			trim($data[6]),
-			$this->convertDate((string)$data[5]),
-			$this->convertDate((string)$data[7]),
-			(float)str_replace(',', '.', $data[8]),
-			trim($data[17]),
-			str_replace('*', '+', trim($data[16]))
+			trim($data[6]),                                 // statementLine
+			$this->convertDate((string)$data[5]),           // transactionDate
+			$this->convertDate((string)$data[7]),           // valueDate
+			(float)str_replace(',', '.', $data[8]),         // amount
+			trim($data[17]),                                // message
+			str_replace('*', '+', trim($data[16]))          // extraDetails
 		)];
 	}
 }
