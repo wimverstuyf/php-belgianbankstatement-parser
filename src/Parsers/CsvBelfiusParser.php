@@ -14,6 +14,12 @@ use UnexpectedValueException;
  */
 class CsvBelfiusParser extends CsvParser {
 
+	/**
+	 * Converts a date string to YYYY-MM-DD format
+	 * 
+	 * @param string $dateString The date string to convert (accepts DD/MM/YYYY or DD/MM/YY format)
+	 * @return DateTime Returns a DateTime object representing the parsed date
+	 */
     private function convertDate($dateString): DateTime
     {
         $date = $dateString;
@@ -26,6 +32,11 @@ class CsvBelfiusParser extends CsvParser {
         return new DateTime($date);
     }
 
+	/**
+	 * Returns the CSV separator character used in Belfius bank statements
+	 * 
+	 * @return string The separator character (semicolon)
+	 */
     protected function getSeparator(): string
     {
         return ";";

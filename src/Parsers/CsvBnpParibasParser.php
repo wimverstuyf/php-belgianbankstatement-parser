@@ -14,6 +14,12 @@ use UnexpectedValueException;
  */
 class CsvBnpParibasParser extends CsvParser {
 
+	/**
+	 * Converts a date string from DD/MM/YYYY format to YYYY-MM-DD format
+	 * 
+	 * @param string $dateString The date string to convert (expected format: DD/MM/YYYY)
+	 * @return DateTime Returns a DateTime object representing the parsed date
+	 */
 	private function convertDate($dateString): DateTime
 	{
 		$date = $dateString;
@@ -24,6 +30,11 @@ class CsvBnpParibasParser extends CsvParser {
 		return new DateTime($date);
 	}
 
+	/**
+	 * Returns the CSV separator character used in BNP Paribas bank statements
+	 * 
+	 * @return string The separator character (semicolon)
+	 */
 	protected function getSeparator(): string
 	{
 		return ";";

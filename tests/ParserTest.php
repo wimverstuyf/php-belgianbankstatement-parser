@@ -177,6 +177,20 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals(-52.30, $tr2->getAmount());
 	}
 
+	public function testCsvTriodosParse()
+	{
+		$parser = new Parser();
+
+		$statements = $parser->parseFile($this->getSampleFile('sample9_triodos.csv'), 'csv_triodos');
+
+		$this->assertEquals(1, count($statements));
+		$statement = $statements[0];
+
+		$this->assertEquals("CODELICIOUS", $statement->getAccount()->getName());
+		$tr2 = $statement->getTransactions()[2];
+		$this->assertEquals(-52.30, $tr2->getAmount());
+	}
+
 	public function testParseFileCsv()
 	{
 		$parser = new Parser();

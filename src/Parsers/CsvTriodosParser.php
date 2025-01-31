@@ -10,10 +10,17 @@ use UnexpectedValueException;
 /**
  * @package Codelicious\BelgianBankStatement
  * @author Wim Verstuyf (wim.verstuyf@codelicious.be)
+ * @author Cyrille Duverne (cydit.now@gmail.com)
  * @license http://opensource.org/licenses/GPL-2.0 GPL-2.0
  */
 class CsvTriodosParser extends CsvParser {
 
+	/**
+	 * Converts a date string from DD/MM/YYYY format to YYYY-MM-DD format
+	 * 
+	 * @param string $dateString The date string to convert (expected format: DD/MM/YYYY)
+	 * @return DateTime Returns a DateTime object representing the parsed date
+	 */
 	private function convertDate($dateString): DateTime
 	{
 		$date = $dateString;
@@ -24,6 +31,11 @@ class CsvTriodosParser extends CsvParser {
 		return new DateTime($date);
 	}
 
+	/**
+	 * Returns the CSV separator character used in Triodos bank statements
+	 * 
+	 * @return string The separator character (semicolon)
+	 */
 	protected function getSeparator(): string
 	{
 		return ";";
