@@ -23,12 +23,14 @@ class CsvTriodosParser extends CsvParser {
 	 */
 	private function convertDate($dateString): DateTime
 	{
-		$date = $dateString;
 		if (mb_strlen($dateString) == 10) {
-			$date = substr($dateString, 6, 4) . "-" . substr($dateString, 3, 2) . "-" . substr($dateString, 0, 2);
+			// Convert from DD-MM-YYYY to YYYY-MM-DD
+			$parts = explode('-', $dateString);
+			if (count($parts) === 3) {
+				return new DateTime($parts[2] . '-' . $parts[1] . '-' . $parts[0]);
+			}
 		}
-
-		return new DateTime($date);
+		throw new UnexpectedValueException("Invalid date format: " . $dateString);
 	}
 
 	/**
@@ -38,7 +40,7 @@ class CsvTriodosParser extends CsvParser {
 	 */
 	protected function getSeparator(): string
 	{
-		return ";";
+		return ",";
 	}
 
 	/**
@@ -47,33 +49,36 @@ class CsvTriodosParser extends CsvParser {
 	 */
 	protected function parseLine(array $data): array
 	{
-		if (count($data) < 9) {
+		if (count($data) < 10) {
 			throw new UnexpectedValueException("CSV content invalid");
 		}
 
 		// Account represents the bank account of the statement owner
 		$account = new Account(
-			trim($data[1]),    // accountNumber (from column 1)
-			"TRIOBEBB",        // bic
-			trim($data[5]),    // name (payee from column 5)
-			"EUR",             // currency 
-			"BE"              // countryCode (since it's Triodos Belgium)
+			"",                // name (not provided for account owner)
+			"",                // bic (not provided for account owner)
+			trim($data[1]),    // number (from column 1: BE)
+			"EUR",             // currencyCode 
+			"BE"               // countryCode
 		);
 
-		return [$account, new Transaction(
+		// Create transaction with counter-party account details
+		$transaction = new Transaction(
 			new Account(
-				trim($data[4]),    // accountNumber (counter-party account)
-				"",                // bic
-				trim($data[3]),    // name (counter-party name)
-				"EUR",             // currency
+				trim($data[5]),    // name (counter-party name, column 5)
+				trim($data[4]),    // bic (counter-party BIC, column 4)
+				trim($data[3]),    // number (counter-party account, column 3)
+				"EUR",             // currencyCode
 				""                 // countryCode
 			),
-			"",                                           // statementLine (not available in CSV)
-			$this->convertDate((string)$data[0]),        // transactionDate (column 0)
-			$this->convertDate((string)$data[0]),        // valueDate (using same as transaction date)
-			(float)str_replace(',', '.', $data[2]),      // amount (column 2)
-			(string)$data[8],                            // message (memo from column 8)
-			""                                           // extraDetails
-		)];
+			trim($data[7]),                               // statementLine
+			$this->convertDate((string)$data[0]),         // transactionDate
+			$this->convertDate((string)$data[0]),         // valueDate
+			(float)str_replace(',', '.', $data[2]),       // amount
+			trim($data[8]),                               // message
+			trim($data[6])                                // extraDetails
+		);
+
+		return [$account, $transaction];
 	}
 }

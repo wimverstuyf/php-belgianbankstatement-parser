@@ -57,7 +57,7 @@ abstract class CsvParser implements ParserInterface {
 		$transactions = [];
 		$isFirstLine = true;
 		$account = new Account("", "", "", "", "");
-		while (($data = fgetcsv($handle, 0, ';', '"')) !== FALSE) {
+		while (($data = fgetcsv($handle, 0, $this->getSeparator(), '"', '\\')) !== FALSE) {
 			// skip empty lines
 			if (!$data || count($data) == 1 && $data[0] === null) {
 				continue;

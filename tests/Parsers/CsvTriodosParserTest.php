@@ -6,70 +6,78 @@ use Codelicious\BelgianBankStatement\Parsers\CsvTriodosParser;
 
 class CsvTriodosParserTest extends \PHPUnit\Framework\TestCase
 {
-	public function testSample1()
+	public function testSample()
 	{
 		$parser = new CsvTriodosParser();
-
-		$statements = $parser->parse($this->getSample1());
+		$statements = $parser->parse($this->getSample());
 
 		$this->assertEquals(1, count($statements));
 		$statement = $statements[0];
 
-		$this->assertEquals(4, count($statement->getTransactions()));
+		$this->assertEquals(6, count($statement->getTransactions()));
 
-		$this->assertEquals("BE15648432165482", $statement->getAccount()->getNumber());
-		$this->assertEquals("MyName", $statement->getAccount()->getName());
-		$this->assertEquals("EUR", $statement->getAccount()->getCurrencyCode());
-
+		// Test first transaction
 		$tr1 = $statement->getTransactions()[0];
-		$tr2 = $statement->getTransactions()[1];
-		$tr3 = $statement->getTransactions()[2];
-		$tr4 = $statement->getTransactions()[3];
-
-		$this->assertEquals("EUROPESE OVERSCHRIJVING VAN          04-01", $tr1->getDescription());
-		$this->assertEquals("2016-01-04", $tr1->getTransactionDate()->format('Y-m-d'));
-		$this->assertEquals("2016-01-04", $tr1->getValutaDate()->format('Y-m-d'));
-		$this->assertEquals(49, $tr1->getAmount());
-		$this->assertEquals("Description5", $tr1->getMessage());
-		$this->assertEmpty($tr1->getStructuredMessage());
-
-		$this->assertEquals("BE21 1548 2315 1548", $tr1->getAccount()->getNumber());
+		$this->assertEquals("SCT", $tr1->getDescription());
+		$this->assertEquals("2024-05-21", $tr1->getTransactionDate()->format('Y-m-d'));
+		$this->assertEquals("2024-05-21", $tr1->getValutaDate()->format('Y-m-d'));
+		$this->assertEquals(480.00, $tr1->getAmount());
+		$this->assertEquals("Contribution John - Jane", $tr1->getMessage());
+		$this->assertEquals("Example Street 123 1000 BRUSSELS", $tr1->getStructuredMessage());
+		
+		// Account details for first transaction
+		$this->assertEquals("BE22222222222222", $tr1->getAccount()->getNumber());
 		$this->assertEquals("EUR", $tr1->getAccount()->getCurrencyCode());
-		$this->assertEquals("ARSPBE11", $tr1->getAccount()->getBic());
-		$this->assertEquals("Client1", $tr1->getAccount()->getName());
-		$this->assertEmpty($tr1->getAccount()->getCountryCode());
-
-		$this->assertEquals("2016-01-03", $tr2->getTransactionDate()->format('Y-m-d'));
-		$this->assertEquals("2016-01-04", $tr2->getValutaDate()->format('Y-m-d'));
-		$this->assertEquals(89.05, $tr2->getAmount());
-		$this->assertEquals("Description4", $tr2->getMessage());
-		$this->assertEmpty($tr2->getStructuredMessage());
-
-		$this->assertEquals("BE32 3154 1548 1253", $tr2->getAccount()->getNumber());
-		$this->assertEquals("EUR", $tr2->getAccount()->getCurrencyCode());
-		$this->assertEquals("KREDBEBB", $tr2->getAccount()->getBic());
-		$this->assertEquals("Client2", $tr2->getAccount()->getName());
-		$this->assertEmpty($tr2->getAccount()->getCountryCode());
-
-		$this->assertEquals(79, $tr3->getAmount());
-
-		$this->assertEquals("2015-12-30", $tr4->getTransactionDate()->format('Y-m-d'));
-		$this->assertEquals("2015-12-30", $tr4->getValutaDate()->format('Y-m-d'));
-		$this->assertEquals(62.77, $tr4->getAmount());
-		$this->assertEquals("+++179/4467/61008+++", $tr4->getStructuredMessage());
-		$this->assertEmpty($tr4->getMessage());
-
-		$this->assertEquals("Client4", $tr4->getAccount()->getName());
+		$this->assertEquals("AXABBE22", $tr1->getAccount()->getBic());
+		$this->assertEquals("John Smith - Jane Doe", $tr1->getAccount()->getName());
+		
+		// Test second transaction
+		$tr2 = $statement->getTransactions()[1];
+		$this->assertEquals("SCT", $tr2->getDescription());
+		$this->assertEquals(264.00, $tr2->getAmount());
+		$this->assertEquals("Contribution FDR 2024 Johnson 1st floor", $tr2->getMessage());
+		$this->assertEquals("Mark Johnson", $tr2->getAccount()->getName());
+		$this->assertEquals("BE33333333333333", $tr2->getAccount()->getNumber());
+		
+		// Test third transaction
+		$tr3 = $statement->getTransactions()[2];
+		$this->assertEquals("SCTIB", $tr3->getDescription());
+		$this->assertEquals(-74.74, $tr3->getAmount());
+		$this->assertEquals("Electrabel", $tr3->getAccount()->getName());
+		$this->assertEquals("BE44444444444444", $tr3->getAccount()->getNumber());
+		
+		// Test fourth transaction
+		$tr4 = $statement->getTransactions()[3];
+		$this->assertEquals(24.00, $tr4->getAmount());
+		$this->assertEquals("Additional contribution 2024 Johnson 1st floor", $tr4->getMessage());
+		$this->assertEquals("Mark Johnson", $tr4->getAccount()->getName());
+		
+		// Test fifth transaction
+		$tr5 = $statement->getTransactions()[4];
+		$this->assertEquals(432.00, $tr5->getAmount());
+		$this->assertEquals("Sa", $tr5->getMessage());
+		$this->assertEquals("Mrs Sarah Wilson", $tr5->getAccount()->getName());
+		$this->assertEquals("BE55555555555555", $tr5->getAccount()->getNumber());
+		$this->assertEquals("BBRUBEBB", $tr5->getAccount()->getBic());
+		
+		// Test sixth transaction
+		$tr6 = $statement->getTransactions()[5];
+		$this->assertEquals(-977.43, $tr6->getAmount());
+		$this->assertEquals("142/1234/56789", $tr6->getMessage());
+		$this->assertEquals("AG Insurance", $tr6->getAccount()->getName());
+		$this->assertEquals("BE66666666666666", $tr6->getAccount()->getNumber());
 	}
 
-	private function getSample1()
+	private function getSample()
 	{
 		$content = array(
-			"Rekeningnummer;Rubrieknaam;Naam;Munt;Afschriftnummer;Datum;Omschrijving;Valuta;Bedrag;Saldo;credit;debet;rekeningnummer tegenpartij;BIC tegenpartij;Naam tegenpartij;Adres tegenpartij;gestructureerde mededeling;Vrije mededeling",
-			"BE15648432165482;MyReference;MyName;EUR;  02016003;04/01/2016;EUROPESE OVERSCHRIJVING VAN          04-01;04/01/2016;49,00;1289,43;49,00;              ;BE21 1548 2315 1548;ARSPBE11;Client1;Address1;                                   ;Description5",
-			"BE15648432165482;MyReference;MyName;EUR;  02016002;03/01/2016;EUROPESE OVERSCHRIJVING VAN          03-01;04/01/2016;89,05;1338,43;89,05;              ;BE32 3154 1548 1253;KREDBEBB;Client2;Address 2;                                   ;Description4",
-			"BE15648432165482;MyReference;MyName;EUR;  02016001;02/01/2016;EUROPESE OVERSCHRIJVING VAN          02-01;02/01/2016;79,00;1417,43;79,00;              ;BE21 2315 8432 2315;KREDBEBB;Client3;Address 3;                                   ;Description3",
-			"BE15648432165482;MyReference;MyName;EUR;  02015354;30/12/2015;EUROPESE OVERSCHRIJVING VAN          30-12;30/12/2015;62,77;1480,20;62,77;              ;BE21 2315 2158 2315;KREDBEBB;Client4;Address 4;***179/4467/61008+++;"
+			'"Date","Account","Amount","CounterpartyAccount","BIC","CounterpartyName","Address","TransactionType","Communication","Balance"',
+			'"21-05-2024","BE11111111111111","480,00","BE22222222222222","AXABBE22","John Smith - Jane Doe","Example Street 123 1000 BRUSSELS","SCT","Contribution John - Jane","497,98"',
+			'"21-05-2024","BE11111111111111","264,00","BE33333333333333","AXABBE22","Mark Johnson","Example Street 123 1000 BRUSSELS","SCT","Contribution FDR 2024 Johnson 1st floor","761,98"',
+			'"21-05-2024","BE11111111111111","-74,74","BE44444444444444","GEBABEBB","Electrabel"," ","SCTIB","321/5678/90876","687,24"',
+			'"24-05-2024","BE11111111111111","24,00","BE33333333333333","AXABBE22","Mark Johnson","Example Street 123 1000 BRUSSELS","SCT","Additional contribution 2024 Johnson 1st floor","711,24"',
+			'"12-06-2024","BE11111111111111","432,00","BE55555555555555","BBRUBEBB","Mrs Sarah Wilson","Example Street 123 1000 BRUSSELS","SCT","Sa","1.143,24"',
+			'"12-06-2024","BE11111111111111","-977,43","BE66666666666666","GEBABEBB","AG Insurance"," ","SCTIB","142/1234/56789","165,81"'
 		);
 
 		return implode("\n", $content);
