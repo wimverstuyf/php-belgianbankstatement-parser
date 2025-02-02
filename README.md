@@ -1,7 +1,7 @@
 # php-belgianbankstatement-parser
 
 Unified parser for several bank statement formats from Belgian banks.
-Supports CODA, MT940 and CSV (BNP Paribas / Belfius / KBC / ING)
+Supports CODA, MT940 and CSV (BNP Paribas / Belfius / KBC / ING / Triodos)
 
 ## Installation
 
