@@ -47,31 +47,32 @@ class CsvTriodosParser extends CsvParser {
 	 */
 	protected function parseLine(array $data): array
 	{
-		if (count($data) < 10) {
+		if (count($data) < 9) {
 			throw new UnexpectedValueException("CSV content invalid");
 		}
 
+		// Account represents the bank account of the statement owner
 		$account = new Account(
-			"",                // accountNumber
-			"",                // bic
-			trim($data[5]),    // name
-			"",                // currency
-			""                 // countryCode
+			trim($data[1]),    // accountNumber (from column 1)
+			"TRIOBEBB",        // bic
+			trim($data[5]),    // name (payee from column 5)
+			"EUR",             // currency 
+			"BE"              // countryCode (since it's Triodos Belgium)
 		);
 
 		return [$account, new Transaction(
 			new Account(
-				trim($data[8]),    // accountNumber
+				trim($data[4]),    // accountNumber (counter-party account)
 				"",                // bic
-				trim($data[7]),    // name
-				(string)$data[4],  // currency
+				trim($data[3]),    // name (counter-party name)
+				"EUR",             // currency
 				""                 // countryCode
 			),
-			(string)$data[10],                           // statementLine
-			$this->convertDate((string)$data[1]),        // transactionDate
-			$this->convertDate((string)$data[2]),        // valueDate
-			(float)str_replace(',', '.', $data[3]),      // amount
-			(string)$data[9],                            // message
+			"",                                           // statementLine (not available in CSV)
+			$this->convertDate((string)$data[0]),        // transactionDate (column 0)
+			$this->convertDate((string)$data[0]),        // valueDate (using same as transaction date)
+			(float)str_replace(',', '.', $data[2]),      // amount (column 2)
+			(string)$data[8],                            // message (memo from column 8)
 			""                                           // extraDetails
 		)];
 	}
