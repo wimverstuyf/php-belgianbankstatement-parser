@@ -6,7 +6,8 @@
   "type": "library",
   "license": "GPL-2.0-only",
   "authors": [
-    { "name": "Wim Verstuyf", "email": "wim.verstuyf@codelicious.be" }
+    { "name": "Wim Verstuyf", "email": "wim.verstuyf@codelicious.be" },
+    { "name": "Cyrille Duverne", "email": "cydit.now@gmail.com" }
   ],
   "require": {
     "php": ">=7.0",
