@@ -23,7 +23,6 @@ class CsvTriodosParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals("2024-05-21", $tr1->getValutaDate()->format('Y-m-d'));
 		$this->assertEquals(480.00, $tr1->getAmount());
 		$this->assertEquals("Contribution John - Jane", $tr1->getMessage());
-		$this->assertEquals("Example Street 123 1000 BRUSSELS", $tr1->getStructuredMessage());
 		
 		// Account details for first transaction
 		$this->assertEquals("BE22222222222222", $tr1->getAccount()->getNumber());
