@@ -76,7 +76,7 @@ class CsvTriodosParser extends CsvParser {
 			$this->convertDate((string)$data[0]),         // valueDate
 			(float)str_replace(',', '.', $data[2]),       // amount
 			trim($data[8]),                               // message
-			trim($data[6])                                // extraDetails
+			""                                			  // extraDetails
 		);
 
 		return [$account, $transaction];
