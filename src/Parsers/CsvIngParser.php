@@ -66,12 +66,12 @@ class CsvIngParser extends CsvParser {
 				(string)$data[7],  // currency
 				""                 // countryCode
 			),
-			trim($data[8]),                             // statementLine
+			trim($data[8]),                             // description
 			$this->convertDate((string)$data[4]),       // transactionDate
 			$this->convertDate((string)$data[5]),       // valueDate
 			(float)str_replace(',', '.', $data[6]),     // amount
 			trim($data[10]),                            // message
-			""                                          // extraDetails
+			""                                          // structuredMessage
 		)];
 	}
 }

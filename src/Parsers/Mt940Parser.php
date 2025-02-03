@@ -55,12 +55,12 @@ class Mt940Parser implements ParserInterface {
 						"",                       						// currency
 						""                        						// countryCode
 					),
-					'',                          						// statementLine
+					'',                          						// description
 					new DateTime($tr->getEntryTimestamp('Y-m-d')),    	// transactionDate
 					new DateTime($tr->getValueTimestamp('Y-m-d')),    	// valueDate
 					$tr->getPrice(),             						// amount
 					$tr->getDescription(),       						// message
-					""                           						// extraDetails
+					""                           						// structuredMessage
 				)
 			);
 		}

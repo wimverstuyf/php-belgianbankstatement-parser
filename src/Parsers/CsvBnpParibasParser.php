@@ -66,12 +66,12 @@ class CsvBnpParibasParser extends CsvParser {
 				(string)$data[4],  // currency
 				""                 // countryCode
 			),
-			(string)$data[10],                           // statementLine
+			(string)$data[10],                           // description
 			$this->convertDate((string)$data[1]),        // transactionDate
 			$this->convertDate((string)$data[2]),        // valueDate
 			(float)str_replace(',', '.', $data[3]),      // amount
 			(string)$data[9],                            // message
-			""                                           // extraDetails
+			""                                           // structuredMessage
 		)];
 	}
 }

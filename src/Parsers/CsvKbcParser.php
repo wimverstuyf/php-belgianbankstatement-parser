@@ -66,12 +66,12 @@ class CsvKbcParser extends CsvParser {
 				(string)$data[3],   	// currency
 				""                  	// countryCode
 			),
-			trim($data[6]),                                 // statementLine
+			trim($data[6]),                                 // description
 			$this->convertDate((string)$data[5]),           // transactionDate
 			$this->convertDate((string)$data[7]),           // valueDate
 			(float)str_replace(',', '.', $data[8]),         // amount
 			trim($data[17]),                                // message
-			str_replace('*', '+', trim($data[16]))          // extraDetails
+			str_replace('*', '+', trim($data[16]))          // structuredMessage
 		)];
 	}
 }

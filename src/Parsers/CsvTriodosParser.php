@@ -71,12 +71,12 @@ class CsvTriodosParser extends CsvParser {
 				"EUR",             // currencyCode
 				""                 // countryCode
 			),
-			trim($data[7]),                               // statementLine
+			trim($data[7]),                               // description
 			$this->convertDate((string)$data[0]),         // transactionDate
 			$this->convertDate((string)$data[0]),         // valueDate
 			(float)str_replace(',', '.', $data[2]),       // amount
 			trim($data[8]),                               // message
-			""                                			  // extraDetails
+			""                                			  // structuredMessage
 		);
 
 		return [$account, $transaction];

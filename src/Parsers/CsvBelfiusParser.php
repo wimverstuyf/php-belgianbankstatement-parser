@@ -74,12 +74,12 @@ class CsvBelfiusParser extends CsvParser {
                 (string)$data[11],  // currency
                 trim($data[13])     // countryCode
             ),
-            trim($data[8]),                                // statementLine
+            trim($data[8]),                                // description
             $this->convertDate((string)$data[1]),          // transactionDate
             $this->convertDate((string)$data[9]),          // valueDate
             (float)str_replace(',', '.', $data[10]),       // amount
             trim($data[14]),                               // message
-            ''                                             // extraDetails
+            ''                                             // structuredMessage
         )];
     }
 }
