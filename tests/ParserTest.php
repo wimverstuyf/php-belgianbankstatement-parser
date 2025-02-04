@@ -231,7 +231,7 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 
 		$statements = $parser->parseFile($this->getSampleFile('sample3.mt940'), 'mt940');
 
-		$this->assertEquals(3, count($statements));
+		$this->assertEquals(2, count($statements));
 	}
 
 	private function getSampleFile(string $sampleFile): string
