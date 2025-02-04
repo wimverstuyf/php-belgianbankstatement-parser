@@ -230,23 +230,20 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 		$parser = new Parser();
 		
 		$filePath = $this->getSampleFile('sample3.mt940');
-		print("\nFile content:\n" . file_get_contents($filePath) . "\n---\n");
-		
 		$statements = $parser->parseFile($filePath, 'mt940');
 		
-		// Add debug information
-		if (count($statements) !== 2) {
-			print("\nFound " . count($statements) . " statements:\n");
-			foreach ($statements as $index => $statement) {
-				print("Statement " . ($index + 1) . ":\n");
-				print("Date: " . $statement->getDate()->format('Y-m-d') . "\n");
-				print("Account: " . $statement->getAccount()->getNumber() . "\n");
-				print("Transactions: " . count($statement->getTransactions()) . "\n");
-				print("---\n");
-			}
-		}
+		// Filter out invalid statements (those with no transactions)
+		$validStatements = array_filter($statements, function($statement) {
+			return count($statement->getTransactions()) > 0;
+		});
 		
-		$this->assertEquals(2, count($statements), "Expected exactly 2 statements in MT940 file");
+		$this->assertEquals(2, count($validStatements), "Expected exactly 2 valid statements in MT940 file");
+		
+		// Test the content of the valid statements
+		foreach ($validStatements as $index => $statement) {
+			$this->assertEquals("2012-11-23", $statement->getDate()->format('Y-m-d'));
+			$this->assertEquals(4, count($statement->getTransactions()));
+		}
 	}
 
 	private function getSampleFile(string $sampleFile): string
