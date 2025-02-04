@@ -7,6 +7,7 @@ use Codelicious\BelgianBankStatement\Parsers\CsvBnpParibasParser;
 use Codelicious\BelgianBankStatement\Parsers\CsvBelfiusParser;
 use Codelicious\BelgianBankStatement\Parsers\CsvKbcParser;
 use Codelicious\BelgianBankStatement\Parsers\CsvIngParser;
+use Codelicious\BelgianBankStatement\Parsers\CsvTriodosParser;
 use Codelicious\BelgianBankStatement\Parsers\Mt940Parser;
 use Codelicious\BelgianBankStatement\Parsers\ParserInterface;
 use Codelicious\BelgianBankStatement\Values\Statement;
@@ -58,6 +59,9 @@ class Parser {
 				break;
 			case "csv_ing":
 				$parser = new CsvIngParser();
+				break;
+			case "csv_triodos":
+				$parser = new CsvTriodosParser();
 				break;
 			case "coda":
 				$parser = new CodaParser();

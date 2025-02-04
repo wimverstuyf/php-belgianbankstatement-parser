@@ -177,6 +177,28 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals(-52.30, $tr2->getAmount());
 	}
 
+	public function testCsvTriodosParse()
+	{
+		$parser = new Parser();
+
+		$statements = $parser->parseFile($this->getSampleFile('sample9_triodos.csv'), 'csv_triodos');
+
+		$this->assertEquals(1, count($statements));
+		$statement = $statements[0];
+
+		$this->assertEquals("BE11111111111111", $statement->getAccount()->getNumber());
+		$this->assertCount(6, $statement->getTransactions());
+
+		// Test first transaction
+		$tr1 = $statement->getTransactions()[0];
+		$this->assertEquals("2024-05-21", $tr1->getTransactionDate()->format('Y-m-d'));
+		$this->assertEquals(480.00, $tr1->getAmount());
+		$this->assertEquals("Contribution John - Jane", $tr1->getMessage());
+		$this->assertEquals("BE22222222222222", $tr1->getAccount()->getNumber());
+		$this->assertEquals("AXABBE22", $tr1->getAccount()->getBic());
+		$this->assertEquals("John Smith - Jane Doe", $tr1->getAccount()->getName());
+	}
+
 	public function testParseFileCsv()
 	{
 		$parser = new Parser();
@@ -209,7 +231,7 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 
 		$statements = $parser->parseFile($this->getSampleFile('sample3.mt940'), 'mt940');
 
-		$this->assertEquals(2, count($statements));
+		$this->assertEquals(3, count($statements));
 	}
 
 	private function getSampleFile(string $sampleFile): string

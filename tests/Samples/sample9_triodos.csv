@@ -1,0 +1,7 @@
+"Date","Account","Amount","CounterpartyAccount","BIC","CounterpartyName","Address","TransactionType","Communication","Balance"
+"21-05-2024","BE11111111111111","480,00","BE22222222222222","AXABBE22","John Smith - Jane Doe","Example Street 123 1000 BRUSSELS","SCT","Contribution John - Jane","497,98"
+"21-05-2024","BE11111111111111","264,00","BE33333333333333","AXABBE22","Mark Johnson","Example Street 123 1000 BRUSSELS","SCT","Contribution FDR 2024 Johnson 1st floor","761,98"
+"21-05-2024","BE11111111111111","-74,74","BE44444444444444","GEBABEBB","Electrabel"," ","SCTIB","321/5678/90876","687,24"
+"24-05-2024","BE11111111111111","24,00","BE33333333333333","AXABBE22","Mark Johnson","Example Street 123 1000 BRUSSELS","SCT","Additional contribution 2024 Johnson 1st floor","711,24"
+"12-06-2024","BE11111111111111","432,00","BE55555555555555","BBRUBEBB","Mrs Sarah Wilson","Example Street 123 1000 BRUSSELS","SCT","Sa","1.143,24"
+"12-06-2024","BE11111111111111","-977,43","BE66666666666666","GEBABEBB","AG Insurance"," ","SCTIB","142/1234/56789","165,81"

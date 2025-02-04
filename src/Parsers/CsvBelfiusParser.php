@@ -14,6 +14,12 @@ use UnexpectedValueException;
  */
 class CsvBelfiusParser extends CsvParser {
 
+	/**
+	 * Converts a date string to YYYY-MM-DD format
+	 * 
+	 * @param string $dateString The date string to convert (accepts DD/MM/YYYY or DD/MM/YY format)
+	 * @return DateTime Returns a DateTime object representing the parsed date
+	 */
     private function convertDate($dateString): DateTime
     {
         $date = $dateString;
@@ -26,6 +32,11 @@ class CsvBelfiusParser extends CsvParser {
         return new DateTime($date);
     }
 
+	/**
+	 * Returns the CSV separator character used in Belfius bank statements
+	 * 
+	 * @return string The separator character (semicolon)
+	 */
     protected function getSeparator(): string
     {
         return ";";
@@ -47,22 +58,28 @@ class CsvBelfiusParser extends CsvParser {
             throw new UnexpectedValueException("CSV content invalid");
         }
 
-        $account = new Account("", "", trim($data[0]), "", "");
+        $account = new Account(
+            "",                 // accountNumber
+            "",                 // bic
+            trim($data[0]),     // name
+            "",                 // currency
+            ""                  // countryCode
+        );
 
         return [$account, new Transaction(
             new Account(
-                trim($data[5]),
-                trim($data[12]),
-                trim($data[4]),
-                (string)$data[11],
-                trim($data[13])
+                trim($data[5]),     // accountNumber
+                trim($data[12]),    // bic
+                trim($data[4]),     // name
+                (string)$data[11],  // currency
+                trim($data[13])     // countryCode
             ),
-            trim($data[8]),
-            $this->convertDate((string)$data[1]),
-            $this->convertDate((string)$data[9]),
-            (float)str_replace(',', '.', $data[10]),
-            trim($data[14]),
-            ''
+            trim($data[8]),                                // description
+            $this->convertDate((string)$data[1]),          // transactionDate
+            $this->convertDate((string)$data[9]),          // valueDate
+            (float)str_replace(',', '.', $data[10]),       // amount
+            trim($data[14]),                               // message
+            ''                                             // structuredMessage
         )];
     }
 }

@@ -14,6 +14,12 @@ use UnexpectedValueException;
  */
 class CsvKbcParser extends CsvParser {
 
+	/**
+	 * Converts a date string from DD/MM/YYYY format to YYYY-MM-DD format
+	 * 
+	 * @param string $dateString The date string to convert (expected format: DD/MM/YYYY)
+	 * @return DateTime Returns a DateTime object representing the parsed date
+	 */
 	private function convertDate($dateString): DateTime
 	{
 		$date = $dateString;
@@ -24,6 +30,11 @@ class CsvKbcParser extends CsvParser {
 		return new DateTime($date);
 	}
 
+	/**
+	 * Returns the CSV separator character used in KBC bank statements
+	 * 
+	 * @return string The separator character (semicolon)
+	 */
 	protected function getSeparator(): string
 	{
 		return ";";
@@ -39,22 +50,28 @@ class CsvKbcParser extends CsvParser {
 			throw new UnexpectedValueException("CSV content invalid");
 		}
 
-		$account = new Account(trim($data[2]), "", trim($data[0]), trim($data[3]), "");
+		$account = new Account(
+			trim($data[2]),    	// accountNumber
+			"",               	// bic
+			trim($data[0]),    	// name
+			trim($data[3]),    	// currency
+			""                	// countryCode
+		);
 
 		return [$account, new Transaction(
 			new Account(
-				trim($data[14]),
-				trim($data[13]),
-				trim($data[12]),
-				(string)$data[3],
-				""
+				trim($data[14]),    	// accountNumber
+				trim($data[13]),    	// bic
+				trim($data[12]),    	// name
+				(string)$data[3],   	// currency
+				""                  	// countryCode
 			),
-			trim($data[6]),
-			$this->convertDate((string)$data[5]),
-			$this->convertDate((string)$data[7]),
-			(float)str_replace(',', '.', $data[8]),
-			trim($data[17]),
-			str_replace('*', '+', trim($data[16]))
+			trim($data[6]),                                 // description
+			$this->convertDate((string)$data[5]),           // transactionDate
+			$this->convertDate((string)$data[7]),           // valueDate
+			(float)str_replace(',', '.', $data[8]),         // amount
+			trim($data[17]),                                // message
+			str_replace('*', '+', trim($data[16]))          // structuredMessage
 		)];
 	}
 }
