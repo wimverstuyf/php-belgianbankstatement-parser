@@ -199,6 +199,34 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals("John Smith - Jane Doe", $tr1->getAccount()->getName());
 	}
 
+	public function testCsvCrelanParse()
+	{
+		$parser = new Parser();
+
+		$statements = $parser->parseFile($this->getSampleFile('sample10_crelan.csv'), 'csv_crelan');
+
+		$this->assertEquals(1, count($statements));
+		$statement = $statements[0];
+
+		$this->assertEquals("BE00 0000 1111 2222", $statement->getAccount()->getNumber());
+		$this->assertCount(4, $statement->getTransactions());
+
+		// Test first transaction
+		$tr1 = $statement->getTransactions()[0];
+		$this->assertEquals("2025-02-03", $tr1->getTransactionDate()->format('Y-m-d'));
+		$this->assertEquals(-5.95, $tr1->getAmount());
+		$this->assertEquals("STORE 1234 03-02-2025 12:06 LOCATION A 123456******1234", $tr1->getMessage());
+		$this->assertEquals("STORE 1234 LOCATION A", $tr1->getAccount()->getName());
+
+		// Test last transaction (transfer)
+		$tr4 = $statement->getTransactions()[3];
+		$this->assertEquals("2025-02-04", $tr4->getTransactionDate()->format('Y-m-d'));
+		$this->assertEquals(-20.00, $tr4->getAmount());
+		$this->assertEquals("12022025+Transfer+ANONYMOUS", $tr4->getMessage());
+		$this->assertEquals("BE11 1111 2222 3333", $tr4->getAccount()->getNumber());
+		$this->assertEquals("Person A", $tr4->getAccount()->getName());
+	}
+
 	public function testParseFileCsv()
 	{
 		$parser = new Parser();

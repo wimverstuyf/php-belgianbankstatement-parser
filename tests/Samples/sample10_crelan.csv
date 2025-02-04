@@ -1,0 +1,5 @@
+Date;Montant;Solde apres operation;Devise;Contrepartie;Compte contrepartie;Type d'operation;Communication;Compte donneur d'ordre
+03/02/2025;-5.95;2100.50;EUR;STORE 1234 LOCATION A;;Paiement Bancontact contactless;STORE 1234 03-02-2025 12:06 LOCATION A 123456******1234;BE00 0000 1111 2222
+03/02/2025;-0.80;2099.70;EUR;STORE 5678 LOCATION B;;Paiement Bancontact contactless;STORE 5678 03-02-2025 16:09 LOCATION B 123456******1234;BE00 0000 1111 2222
+04/02/2025;-9.50;2090.20;EUR;SHOP 9012 LOCATION C;;Paiement Bancontact contactless;SHOP 9012 04-02-2025 12:16 LOCATION C 123456******1234;BE00 0000 1111 2222
+04/02/2025;-20.00;2070.20;EUR;Person A;BE11 1111 2222 3333;Virement via Crelan Mobile;12022025+Transfer+ANONYMOUS;BE00 0000 1111 2222
