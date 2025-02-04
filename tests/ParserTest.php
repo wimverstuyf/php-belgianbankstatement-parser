@@ -256,6 +256,7 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 	public function testParseFileMT940()
 	{
 		$parser = new Parser();
+
 		
 		$filePath = $this->getSampleFile('sample3.mt940');
 		$statements = $parser->parseFile($filePath, 'mt940');
