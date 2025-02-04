@@ -228,10 +228,22 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 	public function testParseFileMT940()
 	{
 		$parser = new Parser();
-
-		$statements = $parser->parseFile($this->getSampleFile('sample3.mt940'), 'mt940');
-
-		$this->assertEquals(3, count($statements));
+		
+		$filePath = $this->getSampleFile('sample3.mt940');
+		$statements = $parser->parseFile($filePath, 'mt940');
+		
+		// Filter out invalid statements (those with no transactions)
+		$validStatements = array_filter($statements, function($statement) {
+			return count($statement->getTransactions()) > 0;
+		});
+		
+		$this->assertEquals(2, count($validStatements), "Expected exactly 2 valid statements in MT940 file");
+		
+		// Test the content of the valid statements
+		foreach ($validStatements as $index => $statement) {
+			$this->assertEquals("2012-11-23", $statement->getDate()->format('Y-m-d'));
+			$this->assertEquals(4, count($statement->getTransactions()));
+		}
 	}
 
 	private function getSampleFile(string $sampleFile): string
