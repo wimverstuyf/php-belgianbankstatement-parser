@@ -5,6 +5,7 @@ namespace Codelicious\BelgianBankStatement;
 use Codelicious\BelgianBankStatement\Parsers\CodaParser;
 use Codelicious\BelgianBankStatement\Parsers\CsvBnpParibasParser;
 use Codelicious\BelgianBankStatement\Parsers\CsvBelfiusParser;
+use Codelicious\BelgianBankStatement\Parsers\CsvCrelanParser;
 use Codelicious\BelgianBankStatement\Parsers\CsvKbcParser;
 use Codelicious\BelgianBankStatement\Parsers\CsvIngParser;
 use Codelicious\BelgianBankStatement\Parsers\CsvTriodosParser;
@@ -53,6 +54,9 @@ class Parser {
 				break;
 			case "csv_belfius":
 				$parser = new CsvBelfiusParser();
+				break;
+			case "csv_crelan":
+				$parser = new CsvCrelanParser();
 				break;
 			case "csv_kbc":
 				$parser = new CsvKbcParser();
