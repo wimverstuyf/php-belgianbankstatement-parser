@@ -26,6 +26,9 @@ class CsvKbcParser extends CsvParser {
 		if (mb_strlen($dateString) == 10) {
 			$date = substr($dateString, 6, 4) . "-" . substr($dateString, 3, 2) . "-" . substr($dateString, 0, 2);
 		}
+		if (mb_strlen($dateString) == 9) {
+			$date = substr($dateString, 5, 4) . "-" . substr($dateString, 2, 2) . "-0" . substr($dateString, 0, 1);
+		}
 
 		return new DateTime($date);
 	}
